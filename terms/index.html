@@ -4,23 +4,27 @@
   <meta charset="UTF-8" />
   <title>Terms of Use</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     a:hover {
       color: #0f172a;
     }
   </style>
-  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>  
+<body class="bg-white text-slate-700">
 
-  <header class="py-6">
+  <!-- Header -->
+  <header class="py-6 border-b border-slate-100">
     <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
       <a
         href="/"
         class="inline-flex items-center gap-2 px-4 py-2 rounded-full
                border border-slate-200 text-sm font-semibold text-slate-900
-               hover:bg-slate-50 hover:border-slate-300 transition-all"
+               no-underline hover:bg-slate-50 hover:border-slate-300 transition-all"
       >
         <span aria-hidden="true">←</span>
         Back to asariko.net
@@ -30,57 +34,59 @@
     </div>
   </header>
 
-
-    
-  <main style="max-width: 720px; margin: 40px auto; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6;">
-    <h1>Terms of Use</h1>
-
-    <p><strong>Last updated:</strong> January 2026</p>
-
-    <p>
-      These Terms of Use ("Terms") govern your use of applications and services
-      provide by Asariko ("we", "our", or "us").
+  <!-- Content -->
+  <main class="max-w-2xl mx-auto px-6 sm:px-8 lg:px-12 py-10 leading-relaxed">
+    <h1 class="text-3xl font-bold text-slate-900 mb-2">Terms of Use</h1>
+    <p class="text-sm text-slate-500 mb-8">
+      <strong>Last updated:</strong> January 2026
     </p>
 
-    <h2>Acceptance of Terms</h2>
-    <p>
-      By downloading, accessing, or using any of our applications or websites,
-      you agree to be bound by these Terms. If you do not agree, do not use the
-      application or service.
-    </p>
+    <div class="space-y-4">
+      <p>
+        These Terms of Use ("Terms") govern your use of applications and services
+        provided by Asariko ("we", "our", or "us").
+      </p>
 
-    <h2>Use of the Application</h2>
-    <p>
-      You may use the application for personal, non-commercial purposes in
-      accordance with applicable laws and regulations.
-    </p>
+      <h2 class="text-lg font-semibold text-slate-900">Acceptance of Terms</h2>
+      <p>
+        By downloading, accessing, or using any of our applications or websites,
+        you agree to be bound by these Terms. If you do not agree, do not use the
+        application or service.
+      </p>
 
-    <h2>Disclaimer</h2>
-    <p>
-      The application is provided on an "as is" and "as available" basis, without
-      warranties of any kind, express or implied. We do not guarantee that the
-      application will be error-free or uninterrupted.
-    </p>
+      <h2 class="text-lg font-semibold text-slate-900">Use of the Application</h2>
+      <p>
+        You may use the application for personal, non-commercial purposes in
+        accordance with applicable laws and regulations.
+      </p>
 
-    <h2>Limitation of Liability</h2>
-    <p>
-      To the maximum extent permitted by law, we shall not be liable for any
-      indirect, incidental, special, consequential, or punitive damages arising
-      out of or related to your use of the application.
-    </p>
+      <h2 class="text-lg font-semibold text-slate-900">Disclaimer</h2>
+      <p>
+        The application is provided "as is" and "as available" without warranties
+        of any kind, express or implied.
+      </p>
 
-    <h2>Changes to These Terms</h2>
-    <p>
-      We may update these Terms from time to time. Continued use of the
-      application after changes constitutes acceptance of the updated Terms.
-    </p>
+      <h2 class="text-lg font-semibold text-slate-900">Limitation of Liability</h2>
+      <p>
+        To the maximum extent permitted by law, we shall not be liable for any
+        indirect, incidental, special, consequential, or punitive damages.
+      </p>
 
-    <h2>Contact</h2>
-    <p>
-      Asariko is operated by Asar Aygul. If you have any questions about these Terms, you can contact us at:
-      <br />
-      <strong>Email:</strong> team@asariko.net
-    </p>
+      <h2 class="text-lg font-semibold text-slate-900">Changes to These Terms</h2>
+      <p>
+        We may update these Terms from time to time. Continued use of the
+        application after changes constitutes acceptance of the updated Terms.
+      </p>
+
+      <h2 class="text-lg font-semibold text-slate-900">Contact</h2>
+      <p>
+        Asariko is operated by Asar Aygul.  
+        If you have any questions, contact us at:
+        <br />
+        <strong>Email:</strong> team@asariko.net
+      </p>
+    </div>
   </main>
+
 </body>
 </html>
