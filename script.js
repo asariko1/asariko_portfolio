@@ -111,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isHidden) {
         menu.classList.remove("hidden");
         menu.classList.add("flex");
+        menu.scrollTop = 0;
         requestAnimationFrame(() => {
           menu.classList.remove("opacity-0");
           menu.classList.add("opacity-100");
