@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth scroll-pt-28">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>asariko — Minimal Digital Products</title>
+    <meta name="description" content="Everything here is built with simplicity in mind — no unnecessary complexity, and no distractions." />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+            colors: {
+              slate: {
+                850: '#1f2937', 
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      h1.text-slate-900 {
+        color: #2c3e50 !important;
+      }
+
+      h2.text-slate-900 {
+        color: #2c3e50 !important;
+      }
+
+      header a.text-slate-900 {
+    	color: #2c3e50 !important;
+      }
+
+    </style>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+
+
+
+
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-white text-slate-900 selection:bg-slate-200 selection:text-slate-900 font-sans">
+
+    <!-- Navbar -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300 py-6">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
+            <a href="#home" class="text-xl font-bold tracking-tight text-slate-900 z-50 relative">asariko</a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#home" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Home</a>
+                <a href="#projects" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Projects</a>
+                <a href="#about" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">About</a>
+                <a href="#contact" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Contact</a>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-slate-900 p-2 z-50 relative" aria-label="Toggle menu">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 bg-white z-40 flex-col items-center justify-center gap-8 hidden opacity-0 transition-opacity duration-300">
+            <a href="#home" class="mobile-link text-2xl font-medium text-slate-900">Home</a>
+            <a href="#projects" class="mobile-link text-2xl font-medium text-slate-900">Projects</a>
+            <a href="#about" class="mobile-link text-2xl font-medium text-slate-900">About</a>
+            <a href="#contact" class="mobile-link text-2xl font-medium text-slate-900">Contact</a>
+        </div>
+    </header>
+
+    <main class="pt-28 flex-grow w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col gap-24 md:gap-32 pb-24">
+        
+       
+        <!-- Projects Section -->
+        <section id="projects" class="scroll-mt-24">
+            <div class="flex flex-col gap-32">
+                
+                <!-- Project 1: Gymbadi -->
+                <article class="flex flex-col gap-12">
+                    <div class="max-w-3xl">
+                        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Gymbadi</h2>
+                        <p class="text-xl text-slate-400 font-light mb-6">A minimalist workout companion built for focus.</p>
+                        <p class="text-slate-600 leading-relaxed text-lg mb-8">
+                            Gymbadi is a minimalist workout companion built for focus with built-in timers, haptic feedback, and a muscle progress heatmap that visualizes your growth over time. Keep your progress with your friend.
+                        </p>
+                        
+                        <div class="flex items-center gap-6">
+                        <!--<button onclick="openVideoModal('Gymbadi')" class="flex items-center gap-2 text-sm font-semibold text-slate-900 border border-slate-200 px-4 py-2 rounded-md hover:bg-slate-50 hover:border-slate-300 transition-all">
+                                <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                                Watch Demo
+                            </button> -->
+                            
+                            <!-- Only Source Matter for video -->
+                            
+                              
+                            <!-- End of video source -->
+
+                            <!--<button class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
+                                Learn More
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </button>-->
+                            
+                            <a
+                                href="https://gymbadi-590373398848.us-west1.run.app/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
+                                Use Demo
+                                <i data-lucide="external-link" class="w-3.5 h-3.5 transition-transform duration-200
+                                group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+                            </a>
+
+
+                        </div>
+                    </div>
+
+                    <!-- Video Placeholder -->
+                    <!--
+                    <div class="w-full relative group cursor-pointer overflow-hidden rounded-xl bg-slate-100" onclick="openVideoModal('Gymbadi')">
+                        <div class="aspect-video w-full">
+                            <img src="assets/gymbadi/gymbadi_video-preview.png" alt="Gymbadi demo preview" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors">
+                            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                                <i data-lucide="play" class="w-6 h-6 ml-1 text-slate-900 fill-slate-900"></i>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+
+                    <!-- Image Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="aspect-[3/4] rounded-lg overflow-hidden bg-slate-50"><img src="https://picsum.photos/600/800?random=13&grayscale" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="Screen 3"></div>
+                        <div class="aspect-[3/4] rounded-lg overflow-hidden bg-slate-50"><img src="https://picsum.photos/600/800?random=14&grayscale" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="Screen 4"></div>
+                        <div class="aspect-[3/4] rounded-lg overflow-hidden bg-slate-50"><img src="https://picsum.photos/600/800?random=15&grayscale" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="Screen 5"></div>
+                        <!--<div class="aspect-[3/4] rounded-lg overflow-hidden bg-slate-50"><img src="https://picsum.photos/600/800?random=16&grayscale" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="Screen 6"></div>-->
+                    </div>
+                </article>
+
+                <hr class="border-t border-slate-100" />
+
+                <!-- Project 2: Iora -->
+                <article class="flex flex-col gap-12">
+                    <div class="max-w-3xl">
+                        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Iora</h2>
+                        <p class="text-xl text-slate-400 font-light mb-6">Subscriptions, organized without effort.</p>
+                        <p class="text-slate-600 leading-relaxed text-lg mb-8">
+                            Keep track of all your subscriptions in one place. Add them manually, get reminders before renewal, see monthly and yearly spending, and visualize active subscriptions with a simple graph. Minimal, clear, and effortless.
+                        </p>
+                        
+                        <div class="flex items-center gap-6">
+                            <!--<button onclick="openVideoModal('Iora')" class="flex items-center gap-2 text-sm font-semibold text-slate-900 border border-slate-200 px-4 py-2 rounded-md hover:bg-slate-50 hover:border-slate-300 transition-all">
+                                <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                                Watch Demo
+                            </button>-->
+                            <!--<button class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
+                                Learn More
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </button>-->
+
+                            <a
+                                href="https://iora-600262088280.us-west1.run.app"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
+                                Use Demo
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+
+
+
+                        </div>
+                    </div>
+
+                    <!-- Video Placeholder -->
+                    <!--
+                    <div class="w-full relative group cursor-pointer overflow-hidden rounded-xl bg-slate-100" onclick="openVideoModal('Iora')">
+                        <div class="aspect-video w-full">
+                            <img src="https://picsum.photos/1920/1080?random=2&grayscale" alt="Iora demo preview" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors">
+                            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                                <i data-lucide="play" class="w-6 h-6 ml-1 text-slate-900 fill-slate-900"></i>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+
+                    <!-- Image Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="aspect-[3/4] rounded-lg overflow-hidden bg-slate-50"><img src="https://picsum.photos/600/800?random=23&grayscale" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="Screen 3"></div>
+                        <div class="aspect-[3/4] rounded-lg overflow-hidden bg-slate-50"><img src="https://picsum.photos/600/800?random=24&grayscale" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="Screen 4"></div>
+                        <div class="aspect-[3/4] rounded-lg overflow-hidden bg-slate-50"><img src="https://picsum.photos/600/800?random=25&grayscale" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="Screen 5"></div>
+                        <!--<div class="aspect-[3/4] rounded-lg overflow-hidden bg-slate-50"><img src="https://picsum.photos/600/800?random=26&grayscale" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="Screen 6"></div>-->
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+       
+<!--<footer class="py-8 text-center text-slate-400 text-sm border-t border-slate-100 mt-12">
+        <div class="flex justify-between max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+            <span>&copy; asariko</span>
+            <span>Built with simplicity.</span>
+        </div>
+    </footer>
+    -->
+
+    <footer class="py-8 text-slate-400 text-sm border-t border-slate-100 mt-12">
+        <div class="flex justify-between items-center max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <span>&copy; asariko</span>
+      
+          <div class="flex items-center gap-4">
+            <span>Built with simplicity.</span>
+            <span class="text-slate-300">.</span>
+            <a href="/terms" class="hover:text-slate-900 transition-colors">Terms</a>
+            <span class="text-slate-300">·</span>
+            <a href="/privacy" class="hover:text-slate-900 transition-colors">Privacy</a>
+          </div>
+        </div>
+    </footer>
+
+
+    <!-- Video Modal (Hidden by default) -->
+    <div id="video-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+        <!-- Backdrop -->
+        <div onclick="closeVideoModal()" class="absolute inset-0 bg-white/90 backdrop-blur-sm cursor-pointer"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative w-full max-w-5xl bg-black rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="video-modal-content">
+            <div class="absolute top-4 right-4 z-10">
+                <button onclick="closeVideoModal()" class="p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <div class="aspect-video w-full flex items-center justify-center bg-slate-900">
+                <p class="text-white text-lg font-light flex flex-col items-center gap-4">
+                    <span class="text-4xl">▶</span>
+                    <span id="modal-video-title">Video Placeholder</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
