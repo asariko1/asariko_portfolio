@@ -23,23 +23,7 @@
 </head>
 
 <body class="bg-white text-slate-700">
-
-  <!-- Header -->
-  <header class="py-6 border-b border-slate-100">
-    <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
-      <a
-        href="/"
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full
-               border border-slate-200 text-sm font-semibold text-slate-900
-               no-underline hover:bg-slate-50 hover:border-slate-300 transition-all"
-      >
-        <span aria-hidden="true">←</span>
-        Back to asariko.net
-      </a>
-
-      <span class="text-sm text-slate-400">Asariko</span>
-    </div>
-  </header>
+  <div data-asariko-header style="height:96px"></div>
 
   <!-- Content -->
   <main class="max-w-2xl mx-auto px-6 sm:px-8 lg:px-12 py-10 leading-relaxed">
@@ -94,5 +78,7 @@
     </div>
   </main>
 
+  <div data-asariko-footer></div>
+<script src="../shared/header.js" defer></script>
 </body>
 </html>

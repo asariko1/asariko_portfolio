@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local UI review page (not part of the site)
+ui-review.html
+
+# Old projects page, kept locally as a backup
+projects/index_old.html
+
+# Full-size screenshot originals (the site uses the resized copies)
+assets/_originals/
+/DEMO

@@ -102,6 +102,16 @@
     	color: #2c3e50 !important;
       }
 
+      /* Hero typewriter cursor — solid (no blink) while typing, disappears
+         the instant typing finishes. No text-wrap:balance on the H1 on
+         purpose: balance recalculates "optimal" line breaks on every partial
+         string while typing, which makes words visibly jump between lines. */
+      #heroHeadline .hero-cursor{
+        display:inline-block;width:0.09em;height:0.85em;margin-left:2px;
+        background:#2c3e50;transform:translateY(0.08em);
+      }
+      #heroHeadline .hero-cursor.done{ opacity:0; }
+
     </style>
 
     <!-- Custom CSS -->
@@ -124,51 +134,16 @@
 </head>
 <body class="bg-white text-slate-900 selection:bg-slate-200 selection:text-slate-900 font-sans">
 
-    <!-- Navbar -->
-    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300 py-6">
-        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
-            <!-- header logo -->
-            <!-- <a href="#home" class="text-xl font-bold tracking-tight text-slate-900 z-50 relative">asariko</a> -->
-            <a href="https://asariko.net" class="z-50 relative">
-                <img 
-                    src="/assets/logo.png" 
-                    alt="asariko logo"
-                    class="h-10 md:h-12 w-auto"
-                >
-            </a> 
 
-            <!-- Desktop Nav -->
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="#home" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Home</a>
-                <a href="/projects" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Projects</a>
-                <a href="#about" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">About</a>
-                <a href="#contact" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Contact</a>
-            </nav>
+  <div data-asariko-header style="height:96px"></div>
 
-            <!-- Mobile Menu Button -->
-            <button id="mobile-menu-btn" class="md:hidden text-slate-900 p-2 z-50 relative" aria-label="Toggle menu">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
-        </div>
-
-        <!-- Mobile Nav Overlay -->
-        <div id="mobile-menu" class="fixed top-0 left-0 w-screen h-screen bg-white/70 backdrop-blur-sm z-40 flex-col items-center justify-center gap-8 hidden opacity-0 transition-opacity duration-300">
-            <a href="#home" class="mobile-link text-2xl font-medium text-slate-900">Home</a>
-            <a href="/projects" class="mobile-link text-2xl font-medium text-slate-900">Projects</a>
-            <a href="#about" class="mobile-link text-2xl font-medium text-slate-900">About</a>
-            <a href="#contact" class="mobile-link text-2xl font-medium text-slate-900">Contact</a>
-        </div>
-    </header>
-
-    <main class="pt-28 flex-grow w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col gap-24 md:gap-32 pb-24">
+    <main class="flex-grow w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col gap-24 md:gap-32 pb-24">
         
         <!-- Hero Section -->
         <section id="home" class="pt-32 md:pt-48">
             <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-12 lg:gap-16 items-center">
                 <div class="order-2 lg:order-1 flex flex-col gap-6 lg:gap-8">
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.1]">
-                        Independent developer creating simple, user focused digital products.
-                    </h1>
+                    <h1 id="heroHeadline" class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.1]"><span id="heroHeadlineText"></span><span class="hero-cursor" id="heroCursor"></span></h1>
                     <p class="text-lg sm:text-xl text-slate-500 leading-relaxed max-w-lg">
                         Everything here is built with simplicity in mind, no unnecessary complexity, and no distractions.
                     </p>
@@ -402,23 +377,7 @@
     </footer>
     -->
 
-    <footer class="py-8 text-slate-400 text-sm border-t border-slate-100 mt-12">
-        <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:items-center sm:text-left max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <span>&copy; <span id="year"></span> asariko</span>
-      
-          <div class="flex flex-col items-center gap-2 sm:flex-row sm:gap-4 sm:justify-end">
-
-            <span>Built with simplicity</span>
-          
-            <div class="flex items-center gap-2">
-              <a href="/terms" class="hover:text-slate-900 transition-colors">Terms</a>
-              <span class="text-slate-300">·</span>
-              <a href="/privacy" class="hover:text-slate-900 transition-colors">Privacy</a>
-            </div>
-          
-          </div>
-        </div>
-    </footer>
+    <div data-asariko-footer></div>
 
 
     <!-- Video Modal (Hidden by default) -->
@@ -450,8 +409,44 @@
         lucide.createIcons();
     </script>
 <script type="module" src="/index.tsx"></script>
-<script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+
+  <script>
+    // Hero headline typewriter — types the real text in with a small JS loop
+    // instead of the classic CSS width+steps() trick, because that trick only
+    // works for a single line of text; this headline wraps across several
+    // lines and needs to reflow naturally as it grows.
+    (function(){
+      var h1 = document.getElementById('heroHeadline');
+      var textEl = document.getElementById('heroHeadlineText');
+      var cursorEl = document.getElementById('heroCursor');
+      if (!h1 || !textEl || !cursorEl) return;
+
+      var FULL_TEXT = 'Independent developer creating simple, user focused digital products.';
+      var CHAR_MS = 85; //typwrite efektin hizi burdan ayarlaniyor
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Render the full text once first just to measure its real height, then
+      // lock that in as min-height — so the paragraph/buttons below never
+      // jump around as the headline grows line by line during typing.
+      textEl.textContent = FULL_TEXT;
+      h1.style.minHeight = h1.getBoundingClientRect().height + 'px';
+
+      if (reduceMotion) return; // leave the full text in place, no animation
+
+      textEl.textContent = '';
+      var i = 0;
+      function tick(){
+        i++;
+        textEl.textContent = FULL_TEXT.slice(0, i);
+        if (i < FULL_TEXT.length){
+          setTimeout(tick, CHAR_MS);
+        } else {
+          cursorEl.classList.add('done');
+        }
+      }
+      setTimeout(tick, CHAR_MS);
+    })();
   </script>
+<script src="shared/header.js" defer></script>
 </body>
 </html>

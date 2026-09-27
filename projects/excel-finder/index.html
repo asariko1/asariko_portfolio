@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Universal Excel Finder — Search Any Spreadsheet Column | asariko</title>
+    <meta name="description" content="Search any column of any sheet in your Excel or CSV file. Header rows are detected automatically and results filter as you type. Runs in your browser; nothing is uploaded." />
+    <link rel="canonical" href="https://asariko.net/projects/excel-finder/">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#2c3e50">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="asariko">
+    <meta property="og:url" content="https://asariko.net/projects/excel-finder/">
+    <meta property="og:title" content="Universal Excel Finder — Search Any Spreadsheet Column | asariko">
+    <meta property="og:description" content="Search any column of any sheet in your Excel or CSV file. Header rows are detected automatically and results filter as you type. Runs in your browser; nothing is uploaded.">
+    <meta property="og:image" content="https://asariko.net/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="apple-touch-icon" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } } }</script>
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+      :root { --ink: #2c3e50; --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
+      h1.text-slate-900, h2.text-slate-900 { color: var(--ink) !important; }
+      a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+      .back { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #475569; background: #fff; border: 1px solid #e2e8f0; padding: 8px 14px 8px 10px; border-radius: 999px; text-decoration: none; transition: border-color 150ms, transform 160ms var(--ease-out); }
+      .back:hover { border-color: #cbd5e1; color: var(--ink); }
+      .status-line { display: inline-block; font-size: 13.5px; color: #475569; background: #f1f5f9; padding: 6px 12px; border-radius: 999px; }
+      .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+      .btn-p { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #fff; padding: 14px 22px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out); }
+      .btn-s { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #334155; border: 1px solid #e2e8f0; padding: 13px 22px; }
+      .btn-s:has(svg) { padding-top: 6px; padding-bottom: 6px; } /* big GitHub logo sets the height, like the old projects page */
+      .btn-s { border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform 160ms var(--ease-out), border-color 150ms; }
+      .btn-s:hover { border-color: #cbd5e1; }
+      @media (hover: hover) and (pointer: fine) { .btn-p:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0/.1), 0 4px 6px -4px rgb(0 0 0/.1); } }
+      .btn-p:active, .btn-s:active, .back:active { transform: scale(.97); }
+      .shot { border-radius: 16px; overflow: hidden; background: #f1f5f9; border: 1px solid #eef2f6; box-shadow: 0 20px 50px -20px rgba(15,23,42,.25); }
+      .ph { aspect-ratio: 16 / 10; display: flex; flex-direction: column; }
+      .ph-bar { height: 26px; flex: none; background: #e2e8f0; display: flex; align-items: center; gap: 6px; padding: 0 12px; }
+      .ph-bar i { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; }
+      .ph-body { flex: 1; display: grid; place-items: center; text-align: center; color: #94a3b8; font-weight: 500; }
+      .ph-body small { display: block; font-size: 12.5px; font-weight: 400; margin-top: 2px; }
+      .step { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: #fff; border: 1px solid #eef2f6; border-radius: 16px; }
+      .step-n { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #fff; font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; margin-bottom: 4px; }
+      .point { display: flex; gap: 12px; align-items: flex-start; color: #475569; font-size: 16px; line-height: 1.6; }
+      .point-i { flex: none; color: var(--ink); margin-top: 3px; }
+      .note { margin-top: 20px; font-size: 14px; line-height: 1.6; color: #64748b; background: #f8fafc; border: 1px solid #eef2f6; border-radius: 12px; padding: 14px 16px; }
+    </style>
+</head>
+<body class="bg-white text-slate-900 selection:bg-slate-200 selection:text-slate-900 font-sans">
+  <div data-asariko-header style="height:96px"></div>
+
+  <main class="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pb-24">
+    <div class="pt-10"><a class="back" href="../#tools"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> All web tools</a></div>
+
+    <section class="mt-8 grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-12 items-center">
+      <div class="flex flex-col gap-5">
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 leading-[1.1]">Universal Excel Finder</h1>
+        <p class="text-xl text-slate-500 leading-relaxed">Search any column of any sheet.</p>
+        <div><span class="status-line">Free · runs in your browser, nothing uploaded</span></div>
+        <div class="actions pt-2"><a class="btn-p" href="https://excelfinder.asariko.net" target="_blank" rel="noopener noreferrer">Open Excel Finder <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><a class="btn-s" href="https://github.com/asariko1/Universal-Excel-Finder" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 16 16" width="36" height="36" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg> View source</a></div>
+      </div>
+      <div class="shot"><div class="ph"><div class="ph-bar"><i></i><i></i><i></i></div><div class="ph-body">Excel Finder<small>Screenshot coming</small></div></div></div>
+    </section>
+
+    <section class="mt-24" aria-labelledby="how">
+      <h2 id="how" class="text-2xl md:text-3xl font-bold text-slate-900">How it works</h2>
+      <ol class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 list-none p-0">
+          <li class="step"><span class="step-n">1</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Open a spreadsheet</span><span class="text-slate-500 leading-relaxed">An Excel (.xlsx, .xls) or CSV file. It is read in your browser, never uploaded.</span></li>
+          <li class="step"><span class="step-n">2</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Pick the sheet and column</span><span class="text-slate-500 leading-relaxed">The header row is found automatically, and you can change it if it guessed wrong.</span></li>
+          <li class="step"><span class="step-n">3</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Start typing</span><span class="text-slate-500 leading-relaxed">Every match lines up in a clean list, filtered as you type.</span></li>
+      </ol>
+    </section>
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-2 gap-12" aria-labelledby="why">
+      <div>
+        <h2 id="why" class="text-2xl md:text-3xl font-bold text-slate-900">Why use it</h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed max-w-xl">Tired of pressing Enter over and over in Excel’s Find, watching the screen jump from cell to cell until you lose track of where you started? Type a few letters instead, and every match lines up in one list you can scan at a glance.</p>
+        
+      </div>
+      <ul class="flex flex-col gap-4 list-none p-0 lg:pt-14"><li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Search any sheet and any column</span></li><li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Header row detected automatically</span></li><li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Results update as you type</span></li><li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Free and open source; nothing is uploaded</span></li></ul>
+    </section>
+
+    <section class="mt-24 rounded-3xl bg-slate-50 border border-slate-100 px-6 py-12 text-center flex flex-col items-center gap-5">
+      <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Try Excel Finder</h2>
+      <p class="text-slate-500 max-w-md">Free · runs in your browser, nothing uploaded.</p>
+      <a class="btn-p" href="https://excelfinder.asariko.net" target="_blank" rel="noopener noreferrer">Open Excel Finder <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+    </section>
+  </main>
+
+  <div data-asariko-footer></div>
+
+<script src="../../script.js"></script>
+<script src="../../shared/header.js" defer></script>
+</body>
+</html>
