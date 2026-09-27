@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth scroll-pt-28">
+<html lang="en" class="scroll-smooth scroll-pt-28 cover-open">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -112,6 +112,22 @@
       }
       #heroHeadline .hero-cursor.done{ opacity:0; }
 
+      /* ---- Cover page: particle intro over the home page, shown on every load (particles: assets/cover/cover.js) ---- */
+      html.cover-open{ overflow:hidden; }
+      #cover{ position:fixed; inset:0; z-index:2000; overflow:hidden; background:#2c3e50;
+              transition:opacity .7s ease, transform .7s cubic-bezier(.4,0,.2,1); }
+      #cover.gone{ opacity:0; transform:translateY(-3%); pointer-events:none; }
+      #cover[hidden]{ display:none; }
+      #coverBg{ position:absolute; inset:-20px; }
+      #coverBg img{ display:block; width:100%; height:100%; object-fit:cover; }
+      #coverCanvas{ position:relative; display:block; width:100vw; height:100dvh; cursor:none; touch-action:none; -webkit-tap-highlight-color:transparent; }
+      #cover .enter{ position:absolute; left:50%; transform:translateX(-50%); bottom:calc(32px + env(safe-area-inset-bottom));
+                     background:none; border:0; padding:8px 14px; cursor:pointer; -webkit-tap-highlight-color:transparent;
+                     font:30px ui-monospace, Menlo, monospace; letter-spacing:.2em; color:#fff; }
+      #cover.particles .enter{ color:transparent; cursor:none; }  /* once the particles draw ENTER, the real text hides */
+      #cover .enter:focus-visible{ outline:1px solid rgba(255,255,255,.5); outline-offset:4px; }
+      @media (prefers-reduced-motion: reduce){ #cover{ display:none; } html.cover-open{ overflow:auto; } }
+
     </style>
 
     <!-- Custom CSS -->
@@ -133,6 +149,13 @@
 <link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-white text-slate-900 selection:bg-slate-200 selection:text-slate-900 font-sans">
+
+  <!-- Cover page (intro). ENTER or Enter / Space / Esc opens the site. -->
+  <div id="cover">
+    <div id="coverBg"></div>
+    <canvas id="coverCanvas" aria-hidden="true"></canvas>
+    <button class="enter" type="button" aria-label="Enter asariko.net">ENTER</button>
+  </div>
 
 
   <div data-asariko-header style="height:96px"></div>
@@ -431,10 +454,11 @@
       textEl.textContent = FULL_TEXT;
       h1.style.minHeight = h1.getBoundingClientRect().height + 'px';
 
+      window.startHeroTypewriter = function(){};
       if (reduceMotion) return; // leave the full text in place, no animation
 
       textEl.textContent = '';
-      var i = 0;
+      var i = 0, started = false;
       function tick(){
         i++;
         textEl.textContent = FULL_TEXT.slice(0, i);
@@ -444,9 +468,43 @@
           cursorEl.classList.add('done');
         }
       }
-      setTimeout(tick, CHAR_MS);
+      // Starts when the cover page is left (ENTER); straight away if there is no cover.
+      window.startHeroTypewriter = function(){
+        if (started) return;
+        started = true;
+        setTimeout(tick, CHAR_MS);
+      };
+      var coverEl = document.getElementById('cover');
+      if (!coverEl || coverEl.hidden) window.startHeroTypewriter();
     })();
   </script>
+
+  <script>
+    // Cover page: ENTER (or Enter / Space / Esc / ↓ / Page Down) opens the site. Kept here, not in cover.js,
+    // so nobody gets stuck on the cover even if the particle script fails to load.
+    (function(){
+      var cover = document.getElementById('cover');
+      var root = document.documentElement;
+      if (!cover) { root.classList.remove('cover-open'); return; }
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        cover.hidden = true; root.classList.remove('cover-open'); window.startHeroTypewriter(); return;
+      }
+      function enterSite(){
+        if (cover.classList.contains('gone')) return;
+        cover.classList.add('gone');
+        root.classList.remove('cover-open');
+        window.dispatchEvent(new Event('asariko:enter'));   // cover.js stops drawing
+        window.startHeroTypewriter();
+        setTimeout(function(){ cover.hidden = true; }, 750);
+      }
+      cover.querySelector('.enter').addEventListener('click', enterSite);
+      window.addEventListener('keydown', function(e){
+        if (cover.classList.contains('gone')) return;
+        if (['Enter', ' ', 'Escape', 'ArrowDown', 'PageDown'].indexOf(e.key) !== -1) { e.preventDefault(); enterSite(); }
+      });
+    })();
+  </script>
+  <script src="assets/cover/cover.js" defer></script>
 <script src="shared/header.js" defer></script>
 </body>
 </html>
