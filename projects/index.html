@@ -84,6 +84,14 @@
   .btn-p:active, .btn-s:active, .badge-link:active, .small:active { transform: scale(.97); }
   .badge-link { display: inline-block; transition: transform 160ms var(--ease-out); }
   .badge-link img { height: 38px; width: auto; display: block; }
+  /* Store badges: same height, side by side. Columns are sized to each badge's own width at equal height
+     (Apple 119.66 : Google 134.87), so on narrow screens both shrink together instead of wrapping. */
+  .stores { display: grid; grid-template-columns: 119.66fr 134.87fr; gap: 10px; width: min(100%, 290px); padding-top: 12px; position: relative; z-index: 1; }
+  .stores.apple-only { grid-template-columns: 119.66fr; width: min(100%, 136px); }
+  .stores .badge-link img { width: 100%; height: auto; }
+  article.mid .stores { padding-top: 10px; }
+  .mid-soon .status { color: #94a3b8; }
+  .mid-soon .mid-media img { opacity: .75; }
 
   .small { display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 14px; padding: 12px; border: 1px solid #f1f5f9; border-radius: 14px; background: #fff; text-decoration: none; transition: border-color 150ms var(--ease-out), transform 120ms var(--ease-out); }
   .small:hover { border-color: #e2e8f0; }
@@ -247,9 +255,8 @@
             <p class="text-sm text-slate-500">Subscriptions, organized without effort.</p>
             <p class="text-[15px] leading-relaxed text-slate-600">Track every subscription, get reminders before renewal, and see monthly and yearly spending.</p>
             <p class="status">On the App Store and Google Play</p>
-            <div class="actions"><a class="btn-p" href="https://iora.asariko.net" target="_blank" rel="noopener noreferrer">Open Iora <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-            <a class="badge-link" href="https://apps.apple.com/app/id6787712991" target="_blank" rel="noopener noreferrer" aria-label="Download Iora on the App Store"><img src="../assets/badges/apple-store-black.svg" alt="Download on the App Store"></a>
-            <a class="badge-link" href="https://play.google.com/store/apps/details?id=net.asariko.iora" target="_blank" rel="noopener noreferrer" aria-label="Get Iora on Google Play"><img src="../assets/badges/google-play.svg" alt="Get it on Google Play"></a></div>
+            <div class="actions"><a class="btn-p" href="https://iora.asariko.net" target="_blank" rel="noopener noreferrer">Open Iora <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
+            <div class="stores"><a class="badge-link" href="https://apps.apple.com/app/id6787712991" target="_blank" rel="noopener noreferrer" aria-label="Download Iora on the App Store"><img src="../assets/badges/apple-store-black.svg" alt="Download on the App Store"></a><a class="badge-link" href="https://play.google.com/store/apps/details?id=net.asariko.iora" target="_blank" rel="noopener noreferrer" aria-label="Get Iora on Google Play"><img src="../assets/badges/google-play.svg" alt="Get it on Google Play"></a></div>
           </div>
         </article>
         <article class="big" data-name="Flamenco Compás Master" data-short="Compás Master" data-tag="Flamenco rhythm practice with real palmas and cajón." data-url="https://flamencocompasmaster.asariko.net/" data-img="../assets/compass_master/compass-mainscreen.webp" data-kind="app">
@@ -264,20 +271,20 @@
         </article>
       </div>
       <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a class="mid" href="https://peri.asariko.net/" target="_blank" rel="noopener noreferrer" data-name="Peri" data-short="Peri" data-tag="Track your cycle with calm, clear insights and predictions." data-url="https://peri.asariko.net/" data-img="../assets/cycle_serenity/peri-mainscreen.webp" data-kind="app">
+        <article class="mid" data-name="Peri" data-short="Peri" data-tag="Track your cycle with calm, clear insights and predictions." data-url="https://peri.asariko.net/" data-img="../assets/cycle_serenity/peri-mainscreen.webp" data-kind="app">
           <span class="mid-media" data-media></span>
-          <span class="mid-body"><span class="font-semibold text-[17px]" style="color:var(--ink)">Peri</span>
+          <span class="mid-body"><a class="mid-title font-semibold text-[17px]" style="color:var(--ink)" href="https://peri.asariko.net/" target="_blank" rel="noopener noreferrer">Peri</a>
             <span class="text-sm text-slate-500">Track your cycle with calm, clear insights and predictions.</span>
-            <span class="status">Live at peri.asariko.net</span>
-            <span class="mid-open">Open Peri <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span></span>
-        </a>
-        <a class="mid" href="https://gymbadi.asariko.net" target="_blank" rel="noopener noreferrer" data-name="Gymbadi" data-short="Gymbadi" data-tag="A minimalist workout companion built for focus." data-url="https://gymbadi.asariko.net" data-img="../assets/gymbadi/g1.webp" data-kind="app">
+            <span class="status">On the App Store</span>
+            <a class="mid-open" href="https://peri.asariko.net/" target="_blank" rel="noopener noreferrer">Open Peri <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+            <span class="stores apple-only"><a class="badge-link" href="https://apps.apple.com/app/id6793244672" target="_blank" rel="noopener noreferrer" aria-label="Download Peri on the App Store"><img src="../assets/badges/apple-store-black.svg" alt="Download on the App Store"></a></span></span>
+        </article>
+        <article class="mid mid-soon" data-name="Gymbadi" data-short="Gymbadi" data-tag="A minimalist workout companion built for focus." data-url="" data-img="../assets/gymbadi/g1.webp" data-kind="app">
           <span class="mid-media" data-media></span>
           <span class="mid-body"><span class="font-semibold text-[17px]" style="color:var(--ink)">Gymbadi</span>
             <span class="text-sm text-slate-500">A minimalist workout companion built for focus.</span>
-            <span class="status">Live at gymbadi.asariko.net</span>
-            <span class="mid-open">Open Gymbadi <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span></span>
-        </a>
+            <span class="status">Coming soon</span></span>
+        </article>
         <a class="mid" href="https://reports.asariko.net" target="_blank" rel="noopener noreferrer" data-name="EchoPath" data-short="EchoPath" data-tag="Raw feedback, refined into clarity." data-url="https://reports.asariko.net" data-img="../assets/echopath/e1.webp" data-kind="app">
           <span class="mid-media" data-media></span>
           <span class="mid-body"><span class="font-semibold text-[17px]" style="color:var(--ink)">EchoPath</span>
@@ -315,9 +322,9 @@ document.querySelectorAll('[data-hint]').forEach(h => { h.textContent = canHover
 function makeStack(el, cap, list, tall, onPick) {
   const cards = list.map(p => {
     // seçim ekranında kartlar link değil (panelin kendisi buton); açık görünümde projeyi açar
-    const a = document.createElement(onPick ? 'span' : 'a');
+    const a = document.createElement(onPick || !p.url ? 'span' : 'a');
     a.className = 's-card';
-    if (!onPick) { a.href = p.url; if (p.url !== '#' && !p.about) { a.target = '_blank'; a.rel = 'noopener noreferrer'; } a.setAttribute('aria-label', `Open ${p.name}`); }
+    if (!onPick && p.url) { a.href = p.url; if (p.url !== '#' && !p.about) { a.target = '_blank'; a.rel = 'noopener noreferrer'; } a.setAttribute('aria-label', `Open ${p.name}`); }
     a.innerHTML = media(p);
     a._p = p;
     el.appendChild(a);
