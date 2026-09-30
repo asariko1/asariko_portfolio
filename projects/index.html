@@ -74,24 +74,31 @@
   .big-media .ph { height: 100%; }
   .big-media img.phone { position: absolute; top: 6%; left: 50%; height: 88%; width: auto; transform: translateX(-50%); border-radius: 16px; box-shadow: 0 10px 24px -10px rgba(15,23,42,.35); }
   .big-body { padding: 20px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-  .big-body h3 a { color: var(--ink); text-decoration: none; }
-  .big-body h3 a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .status { margin-top: auto; padding-top: 12px; border-top: 1px solid #f1f5f9; font-size: 13px; color: #64748b; }
-  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding-top: 12px; }
   .btn-p { display: inline-flex; align-items: center; gap: 6px; background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 13.5px; font-weight: 500; text-decoration: none; transition: transform 160ms var(--ease-out); }
   .btn-s { display: inline-flex; align-items: center; background: #fff; color: #334155; border: 1px solid #e2e8f0; padding: 9px 16px; border-radius: 8px; font-size: 13.5px; font-weight: 500; text-decoration: none; transition: transform 160ms var(--ease-out), border-color 150ms; }
   .btn-s:hover { border-color: #cbd5e1; }
   .btn-p:active, .btn-s:active, .badge-link:active, .small:active { transform: scale(.97); }
   .badge-link { display: inline-block; transition: transform 160ms var(--ease-out); }
   .badge-link img { height: 38px; width: auto; display: block; }
-  /* Store badges: same height, side by side. Columns are sized to each badge's own width at equal height
-     (Apple 119.66 : Google 134.87), so on narrow screens both shrink together instead of wrapping. */
-  .stores { display: grid; grid-template-columns: 119.66fr 134.87fr; gap: 10px; width: min(100%, 290px); padding-top: 12px; position: relative; z-index: 1; }
-  .stores.apple-only { grid-template-columns: 119.66fr; width: min(100%, 136px); }
+
+  /* ---- Project cards: every card in a row shares the same three rows (picture / text / bottom),
+     so the thin line above the buttons sits at the same height across the row. ---- */
+  .cards > article { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; position: relative; }
+  @supports not (grid-template-rows: subgrid) { .cards > article { display: flex; flex-direction: column; } .card-foot { margin-top: auto; } }
+  .big-body, .mid-body { display: flex; flex-direction: column; gap: 6px; padding: 20px 20px 16px; }
+  .card-title { color: var(--ink); text-decoration: none; }
+  a.card-title::after { content: ""; position: absolute; inset: 0; }   /* the whole card is clickable */
+  a.card-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+  a.card-title:focus-visible { outline: none; }
+  .cards > article:has(a.card-title:focus-visible) { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .card-status { margin-top: auto; padding-top: 8px; font-size: 13px; color: #64748b; }
+  .card-foot { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin: 0 20px; padding: 16px 0 20px; border-top: 1px solid #f1f5f9; }
+  .soon { display: inline-flex; align-items: center; min-height: 42px; font-size: 14px; color: #94a3b8; }
+  .is-soon .mid-media img { opacity: .75; }
+  /* Store badges: same height side by side; they shrink together (never stretched) when space is tight */
+  .stores { display: grid; grid-template-columns: 119.66fr 134.87fr; gap: 10px; flex: 1 1 180px; max-width: 290px; }
+  .stores.apple-only { grid-template-columns: 1fr; flex: 1 1 105px; max-width: 136px; }
   .stores .badge-link img { width: 100%; height: auto; }
-  article.mid .stores { padding-top: 10px; }
-  .mid-soon .status { color: #94a3b8; }
-  .mid-soon .mid-media img { opacity: .75; }
 
   .small { display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 14px; padding: 12px; border: 1px solid #f1f5f9; border-radius: 14px; background: #fff; text-decoration: none; transition: border-color 150ms var(--ease-out), transform 120ms var(--ease-out); }
   .small:hover { border-color: #e2e8f0; }
@@ -125,22 +132,17 @@
   .view .big { border-color: #eef2f6; }
 
   /* Medium cards */
-  .mid { display: flex; flex-direction: column; background: #fff; border: 1px solid #eef2f6; border-radius: 16px; overflow: hidden; text-decoration: none; transition: border-color 150ms var(--ease-out), transform 120ms var(--ease-out); }
+  .mid { display: flex; flex-direction: column; position: relative; background: #fff; border: 1px solid #eef2f6; border-radius: 16px; overflow: hidden; text-decoration: none; transition: border-color 150ms var(--ease-out), transform 120ms var(--ease-out); }
   .mid:hover { border-color: #dfe5ec; }
   .mid:active { transform: scale(.98); }
   .mid-media { position: relative; aspect-ratio: 16 / 10; background: #f1f5f9; overflow: hidden; }
   .mid-media img { position: absolute; top: 8%; left: 50%; height: 84%; width: auto; transform: translateX(-50%); border-radius: 12px; box-shadow: 0 8px 20px -10px rgba(15,23,42,.35); }
   .mid-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
-  .mid-body .status { font-size: 12.5px; padding-top: 10px; }
-  .mid-open { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 13.5px; font-weight: 500; color: var(--ink); }
-  .mid-open svg { transition: transform 160ms var(--ease-out); }
-  @media (hover: hover) and (pointer: fine) { .mid:hover .mid-open svg { transform: translate(2px, -2px); } }
 
   /* Tool medium cards: the whole card opens the about page; "Open" still goes straight to the tool */
   article.mid { position: relative; }
   .mid-title { text-decoration: none; }
   .mid-title::after { content: ""; position: absolute; inset: 0; }
-  article.mid .mid-open { position: relative; z-index: 1; align-self: flex-start; }
   .mid-title:focus-visible { outline: none; }
   article.mid:has(.mid-title:focus-visible) { outline: 2px solid var(--ink); outline-offset: 3px; }
   /* Wide tool screenshots fill their card (phones stay framed) */
@@ -193,44 +195,46 @@
         <p class="stack-cap" id="vcap-tools"></p>
         <p class="stack-hint" data-hint></p>
       </div>
-      <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 cards">
         <article class="big" data-name="PDF Crop" data-short="PDF Crop" data-tag="Crop the same spot from many PDF pages at once, without uploading anything." data-url="https://pdfcrop.asariko.net" data-img="../assets/pdf_crop/pdfcrop.webp" data-kind="tool" data-about="pdf-crop/">
           <div class="big-media" data-media></div>
           <div class="big-body">
-            <h3 class="text-lg font-semibold"><a href="pdf-crop/">PDF Crop</a></h3>
+            <h3 class="font-semibold text-lg"><a class="card-title" href="pdf-crop/">PDF Crop</a></h3>
             <p class="text-sm text-slate-500">Crop the same spot from many PDF pages at once, without uploading anything.</p>
             <p class="text-[15px] leading-relaxed text-slate-600">Draw one box and crop that exact spot from all, odd, even or a range of pages. It can also combine several PDFs into one.</p>
-            <p class="status">Free · runs in your browser, nothing uploaded</p>
-            <div class="actions"><a class="btn-p" href="https://pdfcrop.asariko.net" target="_blank" rel="noopener noreferrer">Open PDF Crop <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-            <a class="btn-s" href="pdf-crop/">How it works</a></div>
+            <p class="card-status">Free · runs in your browser, nothing uploaded</p>
           </div>
+          <div class="card-foot"><a class="btn-p" href="https://pdfcrop.asariko.net" target="_blank" rel="noopener noreferrer">Open PDF Crop <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><a class="btn-s" href="pdf-crop/">How it works</a></div>
         </article>
         <article class="big" data-name="Universal Excel Finder" data-short="Excel Finder" data-tag="Search any column of any sheet." data-url="https://excelfinder.asariko.net" data-img="" data-kind="tool" data-about="excel-finder/">
           <div class="big-media" data-media></div>
           <div class="big-body">
-            <h3 class="text-lg font-semibold"><a href="excel-finder/">Universal Excel Finder</a></h3>
+            <h3 class="font-semibold text-lg"><a class="card-title" href="excel-finder/">Universal Excel Finder</a></h3>
             <p class="text-sm text-slate-500">Search any column of any sheet.</p>
             <p class="text-[15px] leading-relaxed text-slate-600">Type a few letters and every match lines up in a clean list, filtered as you type.</p>
-            <p class="status">Free · runs in your browser, nothing uploaded</p>
-            <div class="actions"><a class="btn-p" href="https://excelfinder.asariko.net" target="_blank" rel="noopener noreferrer">Open Excel Finder <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-            <a class="btn-s" href="excel-finder/">How it works</a></div>
+            <p class="card-status">Free · runs in your browser, nothing uploaded</p>
           </div>
+          <div class="card-foot"><a class="btn-p" href="https://excelfinder.asariko.net" target="_blank" rel="noopener noreferrer">Open Excel Finder <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><a class="btn-s" href="excel-finder/">How it works</a></div>
         </article>
       </div>
-      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 cards">
         <article class="mid" data-name="JSON Viewer" data-short="JSON Viewer" data-tag="Open, search and explore JSON files in your browser." data-url="https://jsonreader.asariko.net/" data-img="../assets/json_reader/json_reader.webp" data-kind="tool" data-about="json-viewer/">
-          <span class="mid-media" data-media></span>
-          <span class="mid-body"><a class="mid-title font-semibold text-[17px]" style="color:var(--ink)" href="json-viewer/">JSON Viewer</a>
-            <span class="text-sm text-slate-500">Open, search and explore JSON files in your browser.</span>
-            <span class="status">Free · runs in your browser, nothing uploaded</span>
-            <a class="mid-open" href="https://jsonreader.asariko.net/" target="_blank" rel="noopener noreferrer">Open JSON Viewer <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></span>
+          <div class="mid-media" data-media></div>
+          <div class="mid-body">
+            <h3 class="font-semibold"><a class="card-title text-[17px]" href="json-viewer/">JSON Viewer</a></h3>
+            <p class="text-sm text-slate-500">Open, search and explore JSON files in your browser.</p>
+            <p class="card-status">Free · runs in your browser, nothing uploaded</p>
+          </div>
+          <div class="card-foot"><a class="btn-p" href="https://jsonreader.asariko.net/" target="_blank" rel="noopener noreferrer">Open JSON Viewer <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
         </article>
         <article class="mid" data-name="Smart Auditor" data-short="Smart Auditor" data-tag="Checks an AEM export against a Compass PDF or TESS report." data-url="https://smartauditor.asariko.net" data-img="" data-kind="tool" data-about="smart-auditor/">
-          <span class="mid-media" data-media></span>
-          <span class="mid-body"><a class="mid-title font-semibold text-[17px]" style="color:var(--ink)" href="smart-auditor/">Smart Auditor</a>
-            <span class="text-sm text-slate-500">Checks an AEM export against a Compass PDF or TESS report.</span>
-            <span class="status">AI-assisted with Google Gemini</span>
-            <a class="mid-open" href="https://smartauditor.asariko.net" target="_blank" rel="noopener noreferrer">Open Smart Auditor <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></span>
+          <div class="mid-media" data-media></div>
+          <div class="mid-body">
+            <h3 class="font-semibold"><a class="card-title text-[17px]" href="smart-auditor/">Smart Auditor</a></h3>
+            <p class="text-sm text-slate-500">Checks an AEM export against a Compass PDF or TESS report.</p>
+            <p class="card-status">AI-assisted with Google Gemini</p>
+          </div>
+          <div class="card-foot"><a class="btn-p" href="https://smartauditor.asariko.net" target="_blank" rel="noopener noreferrer">Open Smart Auditor <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
         </article>
       </div>
     </section>
@@ -247,51 +251,51 @@
         <p class="stack-cap" id="vcap-apps"></p>
         <p class="stack-hint" data-hint></p>
       </div>
-      <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 cards">
         <article class="big" data-name="Iora" data-short="Iora" data-tag="Subscriptions, organized without effort." data-url="https://iora.asariko.net" data-img="../assets/iora/iora-app.webp" data-kind="app">
           <div class="big-media" data-media></div>
           <div class="big-body">
-            <h3 class="text-lg font-semibold"><a href="https://iora.asariko.net" target="_blank" rel="noopener noreferrer">Iora</a></h3>
+            <h3 class="font-semibold text-lg"><a class="card-title" href="https://iora.asariko.net" target="_blank" rel="noopener noreferrer">Iora</a></h3>
             <p class="text-sm text-slate-500">Subscriptions, organized without effort.</p>
             <p class="text-[15px] leading-relaxed text-slate-600">Track every subscription, get reminders before renewal, and see monthly and yearly spending.</p>
-            <p class="status">On the App Store and Google Play</p>
-            <div class="actions"><a class="btn-p" href="https://iora.asariko.net" target="_blank" rel="noopener noreferrer">Open Iora <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
-            <div class="stores"><a class="badge-link" href="https://apps.apple.com/app/id6787712991" target="_blank" rel="noopener noreferrer" aria-label="Download Iora on the App Store"><img src="../assets/badges/apple-store-black.svg" alt="Download on the App Store"></a><a class="badge-link" href="https://play.google.com/store/apps/details?id=net.asariko.iora" target="_blank" rel="noopener noreferrer" aria-label="Get Iora on Google Play"><img src="../assets/badges/google-play.svg" alt="Get it on Google Play"></a></div>
           </div>
+          <div class="card-foot"><a class="btn-p" href="https://iora.asariko.net" target="_blank" rel="noopener noreferrer">Open Iora <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><span class="stores"><a class="badge-link" href="https://apps.apple.com/app/id6787712991" target="_blank" rel="noopener noreferrer" aria-label="Download Iora on the App Store"><img src="../assets/badges/apple-store-black.svg" alt="Download on the App Store"></a><a class="badge-link" href="https://play.google.com/store/apps/details?id=net.asariko.iora" target="_blank" rel="noopener noreferrer" aria-label="Get Iora on Google Play"><img src="../assets/badges/google-play.svg" alt="Get it on Google Play"></a></span></div>
         </article>
         <article class="big" data-name="Flamenco Compás Master" data-short="Compás Master" data-tag="Flamenco rhythm practice with real palmas and cajón." data-url="https://flamencocompasmaster.asariko.net/" data-img="../assets/compass_master/compass-mainscreen.webp" data-kind="app">
           <div class="big-media" data-media></div>
           <div class="big-body">
-            <h3 class="text-lg font-semibold"><a href="https://flamencocompasmaster.asariko.net/" target="_blank" rel="noopener noreferrer">Flamenco Compás Master</a></h3>
+            <h3 class="font-semibold text-lg"><a class="card-title" href="https://flamencocompasmaster.asariko.net/" target="_blank" rel="noopener noreferrer">Flamenco Compás Master</a></h3>
             <p class="text-sm text-slate-500">Flamenco rhythm practice with real palmas and cajón.</p>
             <p class="text-[15px] leading-relaxed text-slate-600">A calm practice space for dancers, guitarists and singers, with real recordings instead of metronome clicks.</p>
-            <p class="status">Live at flamencocompasmaster.asariko.net</p>
-            <div class="actions"><a class="btn-p" href="https://flamencocompasmaster.asariko.net/" target="_blank" rel="noopener noreferrer">Open Compás Master <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
           </div>
+          <div class="card-foot"><a class="btn-p" href="https://flamencocompasmaster.asariko.net/" target="_blank" rel="noopener noreferrer">Open Compás Master <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
         </article>
       </div>
-      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 cards">
         <article class="mid" data-name="Peri" data-short="Peri" data-tag="Track your cycle with calm, clear insights and predictions." data-url="https://peri.asariko.net/" data-img="../assets/cycle_serenity/peri-mainscreen.webp" data-kind="app">
-          <span class="mid-media" data-media></span>
-          <span class="mid-body"><a class="mid-title font-semibold text-[17px]" style="color:var(--ink)" href="https://peri.asariko.net/" target="_blank" rel="noopener noreferrer">Peri</a>
-            <span class="text-sm text-slate-500">Track your cycle with calm, clear insights and predictions.</span>
-            <span class="status">On the App Store</span>
-            <a class="mid-open" href="https://peri.asariko.net/" target="_blank" rel="noopener noreferrer">Open Peri <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
-            <span class="stores apple-only"><a class="badge-link" href="https://apps.apple.com/app/id6793244672" target="_blank" rel="noopener noreferrer" aria-label="Download Peri on the App Store"><img src="../assets/badges/apple-store-black.svg" alt="Download on the App Store"></a></span></span>
+          <div class="mid-media" data-media></div>
+          <div class="mid-body">
+            <h3 class="font-semibold"><a class="card-title text-[17px]" href="https://peri.asariko.net/" target="_blank" rel="noopener noreferrer">Peri</a></h3>
+            <p class="text-sm text-slate-500">Track your cycle with calm, clear insights and predictions.</p>
+          </div>
+          <div class="card-foot"><a class="btn-p" href="https://peri.asariko.net/" target="_blank" rel="noopener noreferrer">Open Peri <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><span class="stores apple-only"><a class="badge-link" href="https://apps.apple.com/app/id6793244672" target="_blank" rel="noopener noreferrer" aria-label="Download Peri on the App Store"><img src="../assets/badges/apple-store-black.svg" alt="Download on the App Store"></a></span></div>
         </article>
-        <article class="mid mid-soon" data-name="Gymbadi" data-short="Gymbadi" data-tag="A minimalist workout companion built for focus." data-url="" data-img="../assets/gymbadi/g1.webp" data-kind="app">
-          <span class="mid-media" data-media></span>
-          <span class="mid-body"><span class="font-semibold text-[17px]" style="color:var(--ink)">Gymbadi</span>
-            <span class="text-sm text-slate-500">A minimalist workout companion built for focus.</span>
-            <span class="status">Coming soon</span></span>
+        <article class="mid is-soon" data-name="Gymbadi" data-short="Gymbadi" data-tag="A minimalist workout companion built for focus." data-url="" data-img="../assets/gymbadi/g1.webp" data-kind="app">
+          <div class="mid-media" data-media></div>
+          <div class="mid-body">
+            <h3 class="font-semibold"><span class="card-title text-[17px]">Gymbadi</span></h3>
+            <p class="text-sm text-slate-500">A minimalist workout companion built for focus.</p>
+          </div>
+          <div class="card-foot"><span class="soon">Coming soon</span></div>
         </article>
-        <a class="mid" href="https://reports.asariko.net" target="_blank" rel="noopener noreferrer" data-name="EchoPath" data-short="EchoPath" data-tag="Raw feedback, refined into clarity." data-url="https://reports.asariko.net" data-img="../assets/echopath/e1.webp" data-kind="app">
-          <span class="mid-media" data-media></span>
-          <span class="mid-body"><span class="font-semibold text-[17px]" style="color:var(--ink)">EchoPath</span>
-            <span class="text-sm text-slate-500">Raw feedback, refined into clarity.</span>
-            <span class="status">Live at reports.asariko.net</span>
-            <span class="mid-open">Open EchoPath <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span></span>
-        </a>
+        <article class="mid" data-name="EchoPath" data-short="EchoPath" data-tag="Raw feedback, refined into clarity." data-url="https://reports.asariko.net" data-img="../assets/echopath/e1.webp" data-kind="app">
+          <div class="mid-media" data-media></div>
+          <div class="mid-body">
+            <h3 class="font-semibold"><a class="card-title text-[17px]" href="https://reports.asariko.net" target="_blank" rel="noopener noreferrer">EchoPath</a></h3>
+            <p class="text-sm text-slate-500">Raw feedback, refined into clarity.</p>
+          </div>
+          <div class="card-foot"><a class="btn-p" href="https://reports.asariko.net" target="_blank" rel="noopener noreferrer">Open EchoPath <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
+        </article>
       </div>
     </section>
   </main>
