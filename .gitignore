@@ -32,3 +32,6 @@ projects/index_old.html
 # Full-size screenshot originals (the site uses the resized copies)
 assets/_originals/
 /DEMO
+/graphify-out
+CLAUDE.md
+.claude
