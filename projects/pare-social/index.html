@@ -36,7 +36,7 @@
       .soon { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 10px; border-radius: 999px; font-size: 13.5px; font-weight: 500; line-height: 1; color: #475569; background: #fff; border: 1px solid #e2e8f0; }
       .soon svg { width: 14px; height: 14px; color: var(--pink); flex: none; }
       .app-icon { width: 72px; height: 72px; border-radius: 16px; filter: drop-shadow(0 6px 14px rgba(15,23,42,.18)); }
-      .desk { position: relative; border-radius: 20px; padding: 36px; background: linear-gradient(135deg, #c7d2fe 0%, #e9d5ff 45%, #fbcfe8 75%, #fde68a 100%); overflow: hidden; }
+      .desk { position: relative; border-radius: 20px; padding: 36px; }
       .win { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 0 0 .5px rgba(15,23,42,.18), 0 22px 50px -18px rgba(15,23,42,.45); background: #fff; }
       .step { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: #fff; border: 1px solid #eef2f6; border-radius: 16px; }
       .step-n { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #fff; font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; margin-bottom: 4px; }
@@ -110,7 +110,7 @@
       .faces { display: grid; grid-template-columns: 0.9fr 1fr; gap: 16px; align-items: center; }
       .faces figure { position: relative; margin: 0; }
       .faces img { display: block; width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 0 .5px rgba(15,23,42,.18), 0 18px 40px -18px rgba(15,23,42,.45); }
-      .facebox { position: absolute; border: 2.5px solid #fff; border-radius: 8px; box-shadow: 0 0 0 1px rgba(0,0,0,.25), 0 0 0 9999px rgba(15,23,42,.18); pointer-events: none; }
+      .facebox { position: absolute; border: 2.5px solid #fff; border-radius: 8px; box-shadow: 0 0 0 1px rgba(0,0,0,.25);  /* just the white box: no dimming around it */ pointer-events: none; }
       .facebox span { position: absolute; left: -2px; top: -28px; font: 600 12px/1 Inter, sans-serif; color: #fff; background: rgba(15,23,42,.7); padding: 5px 8px; border-radius: 6px; white-space: nowrap; }
       .outs { display: grid; grid-template-columns: 0.75fr 1fr; gap: 12px; align-items: end; }
       .outs .wide { grid-column: 1 / -1; }

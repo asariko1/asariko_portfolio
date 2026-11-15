@@ -42,8 +42,8 @@
       .soon { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 10px; border-radius: 999px; font-size: 13.5px; font-weight: 500; line-height: 1; color: #475569; background: #fff; border: 1px solid #e2e8f0; }
       .soon svg { width: 14px; height: 14px; color: #e8883a; flex: none; }
       .app-icon { width: 72px; height: 72px; border-radius: 16px; filter: drop-shadow(0 6px 14px rgba(15,23,42,.18)); }
-      /* screenshots sit on a soft desktop-like backdrop, like a Mac wallpaper */
-      .desk { position: relative; border-radius: 20px; padding: 36px; background: linear-gradient(135deg, #c7d2fe 0%, #e9d5ff 45%, #fbcfe8 75%, #fde68a 100%); overflow: hidden; }
+      /* screenshots sit straight on the page: no backdrop, just the window shadow */
+      .desk { position: relative; border-radius: 20px; padding: 36px; }
       .win { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 0 0 .5px rgba(15,23,42,.18), 0 22px 50px -18px rgba(15,23,42,.45); background: #fff; }
       .step { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: #fff; border: 1px solid #eef2f6; border-radius: 16px; }
       .step-n { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #fff; font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; margin-bottom: 4px; }
@@ -177,7 +177,7 @@
       .qseg .thumb { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 0; border-radius: 7px; background: #fff; box-shadow: 0 1px 2px rgba(15,23,42,.12); transition: transform 200ms var(--ease-in-out), width 200ms var(--ease-in-out); }
       .qseg button { position: relative; z-index: 1; border: 0; background: none; padding: 7px 14px; border-radius: 7px; font: 500 14px/1 Inter, system-ui, sans-serif; color: #475569; cursor: pointer; transition: color 150ms var(--ease-out), transform 100ms var(--ease-out); }
       .qseg button[aria-pressed="true"] { color: var(--ink); } .qseg button:active { transform: scale(.97); }
-      @media (max-width: 640px) { .desk { padding: 18px; } .looks .win + .win { inset: 18px; width: calc(100% - 36px); } .finder { grid-template-columns: 1fr; height: 620px; } .f-side { display: none; } .f-bar .lights { display: flex; } .scene { padding: 20px 10px 16px; } .f-grid { grid-template-columns: repeat(3, 1fr); padding: 12px 6px; } .f-thumb { width: 70px; height: 70px; } .f-thumb img { max-width: 64px; max-height: 64px; } .f-wrap { width: 100%; } .portal-wrap { right: 6px; top: 6px; } .portal-label { display: none; } .cmp-head { grid-template-columns: 1fr 1fr; } .cmp-head .c { display: none; } .bar-row { grid-template-columns: 1fr; gap: 4px; } }
+      @media (max-width: 640px) { .desk { padding: 18px; } .looks .win + .win { inset: 18px; width: calc(100% - 36px); } .finder { grid-template-columns: 1fr; height: auto; } .scene { min-height: 0; } .f-side { display: none; } .f-bar .lights { display: flex; } .scene { padding: 20px 10px 16px; } .f-grid { grid-template-columns: repeat(3, 1fr); padding: 12px 6px; } .f-thumb { width: 70px; height: 70px; } .f-thumb img { max-width: 64px; max-height: 64px; } .f-wrap { width: 100%; } .portal-wrap { right: 6px; top: 6px; } .portal-label { display: none; } .cmp-head { grid-template-columns: 1fr 1fr; } .cmp-head .c { display: none; } .bar-row { grid-template-columns: 1fr; gap: 4px; } }
       @media (prefers-reduced-motion: reduce) { .looks .win, .looks .win.in, .seg .thumb { transition: none; } .zoomer.anim, .f-item.fresh, .ghost.suck, .bar-fill, .qseg .thumb { transition: none; } }
     </style>
 </head>

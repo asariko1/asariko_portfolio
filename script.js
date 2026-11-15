@@ -26,12 +26,14 @@ function openVideoModal(projectName) {
   lastFocusedElement = document.activeElement;
   if (titleEl) titleEl.textContent = projectName; // the placeholder title is replaced by the video on the first open
 
-  const videoHost = modalContent.querySelector(".aspect-video");
+  const videoHost = document.getElementById("video-modal-host"); // by id: the aspect class changes on phones
   if (videoHost) {
     const tall = VIDEO_MAP[projectName]?.startsWith("assets/videos/") && matchMedia("(max-width: 640px)").matches;
     const src = tall ? VIDEO_MAP[projectName].replace(".mp4", "-vertical.mp4") : VIDEO_MAP[projectName];
     videoHost.classList.toggle("aspect-video", !tall);
     videoHost.classList.toggle("aspect-[9/16]", tall);
+    // phones: the tall video fits in 68% of the screen height, so the X and the whole video stay visible
+    modalContent.style.maxWidth = tall ? "calc(68dvh * 9 / 16)" : "";
 
     if (!src) {
       videoHost.innerHTML = `<p class="text-white text-lg font-light">Video not set for ${projectName}</p>`;
