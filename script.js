@@ -21,10 +21,10 @@ function openVideoModal(projectName) {
   const modalContent = document.getElementById("video-modal-content");
   const titleEl = document.getElementById("modal-video-title");
 
-  if (!modal || !modalContent || !titleEl) return;
+  if (!modal || !modalContent) return;
 
   lastFocusedElement = document.activeElement;
-  titleEl.textContent = projectName;
+  if (titleEl) titleEl.textContent = projectName; // the placeholder title is replaced by the video on the first open
 
   const videoHost = modalContent.querySelector(".aspect-video");
   if (videoHost) {
