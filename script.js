@@ -3,7 +3,12 @@
 // ==========================
 const VIDEO_MAP = {
   Gymbadi: "assets/gymbadi/video.mp4",
-  Iora: "assets/iora/video.mp4",
+  Iora: "assets/videos/iora.mp4",
+  // Launch videos ("What we've made" on the home page); phones get the -vertical copy
+  "Pare Social": "assets/videos/pare-social.mp4",
+  "Pare Studio": "assets/videos/pare.mp4",
+  "PDF Crop": "assets/videos/pdfcrop.mp4",
+  "Excel Finder": "assets/videos/excel-finder.mp4",
 };
 
 let lastFocusedElement = null;
@@ -23,7 +28,10 @@ function openVideoModal(projectName) {
 
   const videoHost = modalContent.querySelector(".aspect-video");
   if (videoHost) {
-    const src = VIDEO_MAP[projectName];
+    const tall = VIDEO_MAP[projectName]?.startsWith("assets/videos/") && matchMedia("(max-width: 640px)").matches;
+    const src = tall ? VIDEO_MAP[projectName].replace(".mp4", "-vertical.mp4") : VIDEO_MAP[projectName];
+    videoHost.classList.toggle("aspect-video", !tall);
+    videoHost.classList.toggle("aspect-[9/16]", tall);
 
     if (!src) {
       videoHost.innerHTML = `<p class="text-white text-lg font-light">Video not set for ${projectName}</p>`;

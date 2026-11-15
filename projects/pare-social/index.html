@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pare Social — Every Social Media Size From One Photo, on Your Mac | asariko</title>
+    <meta name="description" content="Pare Social is a free macOS app that turns photos and videos into the exact sizes Instagram, Facebook, TikTok, YouTube, Pinterest and the web ask for, cropped around the subject. Works offline. Coming soon to the Mac App Store." />
+    <link rel="canonical" href="https://asariko.net/projects/pare-social/">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#2c3e50">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="asariko">
+    <meta property="og:url" content="https://asariko.net/projects/pare-social/">
+    <meta property="og:title" content="Pare Social — Every Social Media Size From One Photo, on Your Mac | asariko">
+    <meta property="og:description" content="A free macOS app that makes every social media size from one photo or video, cropped around the subject. Coming soon.">
+    <meta property="og:image" content="https://asariko.net/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="apple-touch-icon" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } } }</script>
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+      :root { --ink: #2c3e50; --pink: #fd1843; --acc: #e38335;  /* --acc: the tick colour in the app's screenshots (it follows the Mac's accent colour) */ --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); }
+      h1.text-slate-900, h2.text-slate-900 { color: var(--ink) !important; }
+      a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+      .back { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #475569; background: #fff; border: 1px solid #e2e8f0; padding: 8px 14px 8px 10px; border-radius: 999px; text-decoration: none; transition: border-color 150ms, transform 160ms var(--ease-out); }
+      .back:hover { border-color: #cbd5e1; color: var(--ink); }
+      .back:active { transform: scale(.97); }
+      .status-line { display: block; font-size: 15px; color: #64748b; }
+      .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+      /* a status label, not a button: becomes the App Store badge at launch */
+      .soon { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 10px; border-radius: 999px; font-size: 13.5px; font-weight: 500; line-height: 1; color: #475569; background: #fff; border: 1px solid #e2e8f0; }
+      .soon svg { width: 14px; height: 14px; color: var(--pink); flex: none; }
+      .app-icon { width: 72px; height: 72px; border-radius: 16px; filter: drop-shadow(0 6px 14px rgba(15,23,42,.18)); }
+      .desk { position: relative; border-radius: 20px; padding: 36px; background: linear-gradient(135deg, #c7d2fe 0%, #e9d5ff 45%, #fbcfe8 75%, #fde68a 100%); overflow: hidden; }
+      .win { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 0 0 .5px rgba(15,23,42,.18), 0 22px 50px -18px rgba(15,23,42,.45); background: #fff; }
+      .step { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: #fff; border: 1px solid #eef2f6; border-radius: 16px; }
+      .step-n { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #fff; font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; margin-bottom: 4px; }
+      .feat { display: flex; flex-direction: column; gap: 6px; padding: 24px; border-radius: 16px; background: #f8fafc; border: 1px solid #eef2f6; }
+      .point { display: flex; gap: 12px; align-items: flex-start; color: #475569; font-size: 16px; line-height: 1.6; }
+      .point-i { flex: none; color: var(--ink); margin-top: 3px; }
+      .note { margin-top: 16px; font-size: 14px; line-height: 1.6; color: #64748b; }
+
+      /* ---------- Live demo: Pare Social's main window, rebuilt with the app's real crops ---------- */
+      .mac { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif; }
+      .app { border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 0 0 .5px rgba(15,23,42,.2), 0 22px 50px -18px rgba(15,23,42,.45); }
+      .app-bar { height: 44px; display: flex; align-items: center; gap: 14px; padding: 0 14px; border-bottom: 1px solid #ececec; background: #fafafa; }
+      .lights { display: flex; gap: 8px; } .lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; box-shadow: inset 0 0 0 .5px rgba(0,0,0,.15); }
+      .lights i:nth-child(2) { background: #febc2e; } .lights i:nth-child(3) { background: #28c840; }
+      .app-bar b { font-size: 13px; font-weight: 600; color: #3c3c43; } .app-bar .sp { flex: 1; }
+      .app-bar .count { font-size: 12px; color: #6e6e73; font-variant-numeric: tabular-nums; }
+      .app-body { display: grid; grid-template-columns: 252px minmax(0, 1fr); height: 520px; }
+      .app-body > * { min-width: 0; }   /* keeps the chip row on phones from widening the page */
+      .side { background: #f5f5f7; border-right: 1px solid #e5e5e7; overflow-y: auto; padding: 10px 8px 14px; }
+      .side h4 { margin: 12px 8px 4px; font-size: 11px; font-weight: 600; color: #8e8e93; letter-spacing: .02em; text-transform: uppercase; }
+      .side h4:first-child { margin-top: 2px; }
+      .pre { position: relative; width: 100%; display: grid; grid-template-columns: 16px 14px 1fr auto; align-items: center; gap: 7px; white-space: nowrap; padding: 5px 8px; border: 0; border-radius: 6px; background: none; font: inherit; font-size: 12.5px; color: #1d1d1f; text-align: left; cursor: pointer; transition: background-color 120ms; }
+      .pre:hover { background: rgba(0,0,0,.04); }
+      .pre[aria-pressed="true"] { background: rgba(227,131,53,.1); }
+      .box { width: 15px; height: 15px; border-radius: 4px; border: 1px solid #c7c7cc; background: #fff; display: grid; place-items: center; transition: background-color 120ms, border-color 120ms; }
+      .box svg { width: 10px; height: 10px; color: #fff; opacity: 0; transition: opacity 120ms; }
+      .pre[aria-pressed="true"] .box { background: var(--acc); border-color: var(--acc); } .pre[aria-pressed="true"] .box svg { opacity: 1; }
+      .nm-s { display: none; }
+      .shape { justify-self: center; border: 1.25px solid #8e8e93; border-radius: 2px; }
+      .dim { font-size: 11.5px; color: #8e8e93; font-variant-numeric: tabular-nums; }
+      .rows { overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; background: #fff; }
+      .frow { border: 1px solid #ececec; border-radius: 12px; padding: 12px 14px 14px; }
+      .frow-h { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+      .frow-h img { width: 28px; height: 28px; border-radius: 5px; object-fit: cover; }
+      .frow-h b { font-size: 13px; font-weight: 600; color: #1d1d1f; } .frow-h span { margin-left: auto; font-size: 11.5px; color: #8e8e93; }
+      .cards { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 16px; min-height: 120px; }
+      .cards .empty { align-self: center; font-size: 12.5px; color: #8e8e93; }
+      .card { display: flex; flex-direction: column; gap: 6px; }
+      .card .pic { position: relative; height: 104px; }
+      .card img { display: block; height: 100%; width: auto; border-radius: 6px; box-shadow: 0 0 0 .5px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.08); }
+      .card .ok { flex: none; width: 9px; height: 9px; border-radius: 50%; background: #34c759; }
+      .card .lbl { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #3c3c43; white-space: nowrap; }
+      .card.new { animation: card-in 260ms var(--ease-out) both; }
+      @keyframes card-in { from { opacity: 0; transform: scale(.94); } }
+      .demo-note { margin-top: 12px; font-size: 13.5px; color: #64748b; }
+      /* phones: the sidebar becomes a row of chips above the cards */
+      @media (max-width: 767px) {
+        .app-body { grid-template-columns: minmax(0, 1fr); height: auto; }
+        .side { display: flex; gap: 6px; overflow-x: auto; padding: 10px; border-right: 0; border-bottom: 1px solid #e5e5e7; scrollbar-width: none; }
+        .side h4 { display: none; }
+        .pre { width: auto; flex: none; grid-template-columns: 15px auto; gap: 6px; padding: 7px 10px; background: #fff; border: 1px solid #e5e5e7; border-radius: 999px; white-space: nowrap; }
+        .pre .shape, .pre .dim, .pre .nm { display: none; }
+        .pre .nm-s { display: inline; }
+        .rows { max-height: 560px; padding: 10px; }
+        .card .pic { height: 84px; }
+      }
+
+      /* Adjust Crop: two real screenshots behind one switch (like Pare's Two looks) */
+      .seg { position: relative; align-self: flex-start; display: inline-flex; padding: 4px; border-radius: 10px; background: #f1f5f9; gap: 2px; isolation: isolate; }
+      .seg .thumb { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 0; border-radius: 7px; background: #fff; box-shadow: 0 1px 2px rgba(15,23,42,.12); transition: transform 200ms var(--ease-in-out), width 200ms var(--ease-in-out); }
+      .seg button { position: relative; z-index: 1; border: 0; background: none; padding: 8px 16px; border-radius: 7px; font: 500 14px/1 Inter, system-ui, sans-serif; color: #475569; cursor: pointer; transition: color 150ms var(--ease-out), transform 100ms var(--ease-out); }
+      .seg button[aria-pressed="true"] { color: var(--ink); }
+      .seg button:active { transform: scale(.97); }
+      .looks { position: relative; }
+      .looks .win + .win { position: absolute; inset: 36px; width: calc(100% - 72px); }
+      .looks .win { transition: opacity 120ms ease, transform 120ms ease; }
+      .looks .win.off { opacity: 0; transform: scale(.985); }
+      .looks .win.in { transition: opacity 200ms var(--ease-out) 60ms, transform 200ms var(--ease-out) 60ms; }
+
+      /* Crops around faces: the source with the face box the app found, and three of its real crops */
+      .faces { display: grid; grid-template-columns: 0.9fr 1fr; gap: 16px; align-items: center; }
+      .faces figure { position: relative; margin: 0; }
+      .faces img { display: block; width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 0 .5px rgba(15,23,42,.18), 0 18px 40px -18px rgba(15,23,42,.45); }
+      .facebox { position: absolute; border: 2.5px solid #fff; border-radius: 8px; box-shadow: 0 0 0 1px rgba(0,0,0,.25), 0 0 0 9999px rgba(15,23,42,.18); pointer-events: none; }
+      .facebox span { position: absolute; left: -2px; top: -28px; font: 600 12px/1 Inter, sans-serif; color: #fff; background: rgba(15,23,42,.7); padding: 5px 8px; border-radius: 6px; white-space: nowrap; }
+      .outs { display: grid; grid-template-columns: 0.75fr 1fr; gap: 12px; align-items: end; }
+      .outs .wide { grid-column: 1 / -1; }
+      .outs figcaption { display: flex; align-items: center; gap: 5px; margin-top: 6px; font: 500 11.5px/1.2 -apple-system, system-ui, sans-serif; color: #1d1d1f; }
+      .outs figcaption i { width: 8px; height: 8px; border-radius: 50%; background: #34c759; }
+      @media (max-width: 640px) { .faces { grid-template-columns: 1fr; } }
+      /* Videos follow the face: one looping three-panel comparison (the app's real output) and a clip switcher */
+      .vid { position: relative; }
+      .vid video { display: block; width: 100%; height: auto; border-radius: 10px; background: #e5e7eb; }
+      .vid .pp { position: absolute; right: 10px; bottom: 10px; width: 36px; height: 36px; border: 0; border-radius: 999px; display: grid; place-items: center; background: rgba(15,23,42,.6); color: #fff; cursor: pointer; opacity: .85; transition: opacity 150ms, transform 160ms var(--ease-out); }
+      .vid .pp:hover { opacity: 1; } .vid .pp:active { transform: scale(.94); }
+      .vid .pp:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+      .vid .pp .i-play, .vid .pp.paused .i-pause { display: none; } .vid .pp.paused .i-play { display: block; }
+      .pareRing { position: absolute; border: 3px solid #e38335; pointer-events: none; }
+      .vlabels { display: grid; margin-top: 12px; }
+      .vlabels div { display: flex; flex-direction: column; gap: 2px; }
+      .vlabels b { font-size: 14px; font-weight: 600; color: #1d1d1f; }
+      .vlabels b.pare { color: #c2611f; }
+      .vlabels span { font-size: 12.5px; color: #475569; }
+      .vlegend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 10px; font-size: 12.5px; color: #334155; }
+      .vlegend i { display: inline-block; width: 18px; height: 11px; margin-right: 6px; vertical-align: -1px; }
+      .vlegend .o { border: 2.5px solid #e38335; } .vlegend .g { border: 2px dashed #94a3b8; }
+      .vchips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+      .vchip { display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; cursor: pointer; font: 500 13.5px/1.2 Inter, sans-serif; color: #475569; transition: border-color 150ms, box-shadow 150ms, transform 120ms var(--ease-out); }
+      .vchip img { width: 64px; height: 36px; object-fit: cover; border-radius: 7px; }
+      .vchip:hover { border-color: #cbd5e1; } .vchip:active { transform: scale(.97); }
+      .vchip[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); color: var(--ink); }
+      @media (max-width: 640px) { .vlabels b { font-size: 10.5px; white-space: nowrap; letter-spacing: -.01em; } .vlabels span { display: none; } .vchip { padding-right: 10px; } .vchip img { width: 52px; height: 30px; } }
+      @media (prefers-reduced-motion: reduce) { .vchip, .vid .pp { transition: none; } }
+      /* Profile grid: the app's real tiles, numbered in posting order */
+      .grid9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; width: min(100%, 420px); background: #fff; padding: 3px; border-radius: 10px; box-shadow: 0 0 0 .5px rgba(15,23,42,.18), 0 22px 50px -18px rgba(15,23,42,.45); }
+      .grid9 figure { position: relative; margin: 0; aspect-ratio: 3 / 4; overflow: hidden; background: #f1f5f9; }
+      .grid9 img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .grid9 figcaption { position: absolute; left: 6px; top: 6px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; display: grid; place-items: center; font: 600 12px/1 Inter, sans-serif; color: #fff; background: rgba(15,23,42,.55); font-variant-numeric: tabular-nums; }
+
+      /* Every size it makes: Swiss list, same as the projects page */
+      .pl-label { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 2px solid var(--ink); font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 28px; }
+      .pl-label span { font-weight: 400; color: #64748b; font-variant-numeric: tabular-nums; }
+      .pl-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding: 12px 4px; border-bottom: 1px solid #e2e8f0; font-size: 15px; color: #475569; }
+      @media (min-width: 768px) { .pl-row { grid-template-columns: 1fr 140px 120px; gap: 24px; } }
+      .pl-row b { font-weight: 600; color: var(--ink); }
+      .pl-row .sz { font-variant-numeric: tabular-nums; color: #334155; text-align: right; }
+      .pl-row .kind { color: #64748b; font-size: 13.5px; }
+      @media (max-width: 767px) { .pl-row .kind { grid-column: 1 / -1; } }
+      .sizes-cols { display: grid; grid-template-columns: 1fr; column-gap: 48px; }
+      @media (min-width: 1024px) { .sizes-cols { grid-template-columns: 1fr 1fr; } }
+
+      @media (max-width: 640px) { .desk { padding: 18px; } .looks .win + .win { inset: 18px; width: calc(100% - 36px); } }
+      @media (prefers-reduced-motion: reduce) { .card.new { animation: none; } .looks .win, .looks .win.in, .seg .thumb { transition: none; } }
+    </style>
+</head>
+<body class="bg-white text-slate-900 selection:bg-slate-200 selection:text-slate-900 font-sans">
+  <div data-asariko-header style="height:96px"></div>
+
+  <main class="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pb-24">
+    <div class="pt-10"><a class="back" href="../#mac"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> All Mac apps</a></div>
+
+    <section class="mt-8 grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-12 items-center">
+      <div class="flex flex-col gap-5">
+        <div class="flex items-center gap-4"><img class="app-icon" src="../../assets/pare-social/icon.webp" width="72" height="72" alt=""><h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 leading-[1.1]">Pare Social</h1></div>
+        <p class="text-2xl font-semibold tracking-tight" style="color:var(--ink)">One drop, every size.</p>
+        <p class="text-lg text-slate-500 leading-relaxed">Tick the sizes you post at, drop your photos and videos, and get a file for each one, cropped around what matters. Instagram, Facebook, TikTok, YouTube, Pinterest and the web.</p>
+        <div><span class="status-line">Free · macOS 15+ · Apple silicon · Mac App Store</span></div>
+        <div class="actions pt-2"><span class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Coming soon</span></div>
+      </div>
+      <div>
+        <div class="app mac" id="demo">
+          <div class="app-bar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><b>Pare Social</b><span class="sp"></span><span class="count" id="demoCount" aria-live="polite"></span></div>
+          <div class="app-body">
+            <div class="side" id="demoSide" role="group" aria-label="Sizes"></div>
+            <div class="rows" id="demoRows"></div>
+          </div>
+        </div>
+        <p class="demo-note">Try it: tick or untick sizes. These are the app’s real crops of three photos.</p>
+      </div>
+    </section>
+
+    <section class="mt-24" aria-labelledby="how">
+      <h2 id="how" class="text-2xl md:text-3xl font-bold text-slate-900">How it works</h2>
+      <ol class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 list-none p-0">
+        <li class="step"><span class="step-n">1</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Tick your sizes</span><span class="text-slate-500 leading-relaxed">Pick the sizes you post at from the sidebar, grouped by platform. Your ticks are remembered.</span></li>
+        <li class="step"><span class="step-n">2</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Drop photos or videos</span><span class="text-slate-500 leading-relaxed">Each file gets one card per ticked size, cropped around the faces or the main subject.</span></li>
+        <li class="step"><span class="step-n">3</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Every size is saved</span><span class="text-slate-500 leading-relaxed">Files are saved right away, named like photo-ig-story.jpg, ready to upload.</span></li>
+      </ol>
+    </section>
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-12 items-center" aria-labelledby="faces">
+      <div class="flex flex-col gap-4">
+        <h2 id="faces" class="text-2xl md:text-3xl font-bold text-slate-900">Crops around faces</h2>
+        <p class="text-lg text-slate-500 leading-relaxed">Pare Social finds the faces in a photo and keeps them in every size, from a tall Story to a wide thumbnail.</p>
+        <p class="text-slate-500 leading-relaxed">No faces? It looks for the most eye-catching part of the picture instead. It all happens on your Mac with Apple Vision, and face positions are thrown away once the crop is placed.</p>
+      </div>
+      <div class="desk">
+        <div class="faces">
+          <!-- face box: what the app's SubjectFinder returned for this photo (normalized, top-left origin) -->
+          <figure><img src="../../assets/pare-social/crops/portrait/source.webp" width="1067" height="1600" alt="A man sitting in a café with plants and a neon sign, with the face the app found outlined" loading="lazy"><span class="facebox" style="left:40.41%;top:35.72%;width:27.20%;height:18.13%"><span>Face found</span></span></figure>
+          <div class="outs">
+            <figure class="wide"><img src="../../assets/pare-social/crops/portrait/yt-thumb.webp" alt="YouTube thumbnail crop, face centred" loading="lazy"><figcaption><i></i>YT Thumbnail</figcaption></figure>
+            <figure><img src="../../assets/pare-social/crops/portrait/ig-story.webp" alt="Instagram Story crop, face centred" loading="lazy"><figcaption><i></i>IG Story / Reel</figcaption></figure>
+            <figure><img src="../../assets/pare-social/crops/portrait/ig-portrait.webp" alt="Instagram portrait post crop, face centred" loading="lazy"><figcaption><i></i>IG Post (portrait)</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-24" aria-labelledby="vfaces">
+      <div class="flex flex-col gap-4 max-w-2xl">
+        <h2 id="vfaces" class="text-2xl md:text-3xl font-bold text-slate-900">Videos follow the face</h2>
+        <p class="text-lg text-slate-500 leading-relaxed">Turning a wide video into a Story or Reel? Pare Social finds the face every 0.2 seconds and moves the crop with it. When the face isn’t seen for a moment, the frame holds still.</p>
+      </div>
+      <div class="desk mt-8">
+        <!-- one video per clip, three panels side by side: original (orange = where Pare Social cropped, measured from its output; dashed = centre crop) | centre crop | Pare Social's real output -->
+        <div class="vid">
+          <video id="vplayer" muted loop playsinline preload="none" poster="../../assets/pare-social/video/clip2-web.jpg" aria-label="A wide video next to a plain centre crop and Pare Social's crop, which follows the face"></video>
+          <span class="pareRing" id="vring" aria-hidden="true"></span>
+          <button type="button" class="pp paused" id="vpp" aria-label="Play video">
+            <svg class="i-pause" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+            <svg class="i-play" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
+          </button>
+        </div>
+        <div class="vlabels" id="vlabels">
+          <div><b>Original</b><span>16:9, as filmed</span></div>
+          <div><b>Centre crop</b><span>stays in the middle</span></div>
+          <div><b class="pare">Pare Social</b><span>follows the face</span></div>
+        </div>
+        <div class="vlegend"><span><i class="o"></i>Pare Social’s crop</span><span><i class="g"></i>Centre crop</span></div>
+      </div>
+      <div class="vchips" role="group" aria-label="Sample videos" id="vchips"></div>
+    </section>
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-12 items-center" aria-labelledby="adjust">
+      <div class="flex flex-col gap-4">
+        <h2 id="adjust" class="text-2xl md:text-3xl font-bold text-slate-900">Adjust any crop</h2>
+        <p class="text-lg text-slate-500 leading-relaxed">The automatic crop is usually right. When it isn’t, double-click a card and move it yourself.</p>
+        <p class="text-slate-500 leading-relaxed"><b class="font-semibold" style="color:var(--ink)">All together</b> shows every size as a coloured frame over the photo; drag the photo under them. <b class="font-semibold" style="color:var(--ink)">One by one</b> lets you drag and zoom inside a single frame, then use that spot for all sizes.</p>
+        <div class="seg" id="adjSeg" role="group" aria-label="Adjust Crop mode"><span class="thumb" aria-hidden="true"></span><button type="button" aria-pressed="true" data-k="all">All together</button><button type="button" aria-pressed="false" data-k="one">One by one</button></div>
+      </div>
+      <div class="desk looks" id="adjLooks">
+        <img class="win" data-k="all" src="../../assets/pare-social/adjust-all.webp" alt="Adjust Crop, All together: one photo with a coloured frame for each size">
+        <img class="win off" data-k="one" src="../../assets/pare-social/adjust-one.webp" alt="Adjust Crop, One by one: the Story frame, with the photo dragged and zoomed inside it" aria-hidden="true">
+      </div>
+    </section>
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-12 items-center" aria-labelledby="grid">
+      <div class="flex flex-col gap-4">
+        <h2 id="grid" class="text-2xl md:text-3xl font-bold text-slate-900">Instagram profile grid</h2>
+        <p class="text-lg text-slate-500 leading-relaxed">Split one photo into 3, 6 or 9 posts that line up on your profile.</p>
+        <p class="text-slate-500 leading-relaxed">Tiles are 3:4, the shape the profile grid shows, and numbered in posting order: the last tile goes up first, so the picture comes out right.</p>
+      </div>
+      <div class="desk flex justify-center"><div class="grid9" id="grid9" aria-label="A photo split into 9 profile tiles, numbered in posting order"></div></div>
+    </section>
+
+    <section class="mt-24" aria-labelledby="what">
+      <h2 id="what" class="text-2xl md:text-3xl font-bold text-slate-900">What it does</h2>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Photos and videos</h3><p class="text-slate-500 leading-relaxed">Videos get one fixed crop, chosen from the first seconds, which you can move.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Ready to upload</h3><p class="text-slate-500 leading-relaxed">Photos are saved as JPEG in standard colours, videos as MP4 (H.264, 1080p, up to 60 fps, audio kept). Pare Studio’s compression keeps them light.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Location removed</h3><p class="text-slate-500 leading-relaxed">GPS location is taken out by default. The capture date stays.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Saved where you want</h3><p class="text-slate-500 leading-relaxed">In one folder you choose, with a subfolder for each drop, or next to the originals.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Changed your ticks?</h3><p class="text-slate-500 leading-relaxed">Tick new sizes after a drop and one click makes them for the files already in the list.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Mini mode</h3><p class="text-slate-500 leading-relaxed">Shrink the window to a small square that stays on top. Drop files on it and they’re saved at your ticked sizes.</p></div>
+      </div>
+    </section>
+
+    <section class="mt-24" aria-labelledby="sizes">
+      <h2 id="sizes" class="text-2xl md:text-3xl font-bold text-slate-900">Every size it makes</h2>
+      <p class="mt-3 text-lg text-slate-500 leading-relaxed max-w-2xl">23 sizes in six groups. New sizes arrive with app updates.</p>
+      <div class="sizes-cols mt-4" id="sizeList"></div>
+    </section>
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-2 gap-12" aria-labelledby="private">
+      <div>
+        <h2 id="private" class="text-2xl md:text-3xl font-bold text-slate-900">On your Mac, nothing uploaded</h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed max-w-xl">Pare Social finds faces and subjects with Apple’s built-in Vision framework, on your Mac. Face positions are used only to place the crop, then thrown away. Nothing is recognised, stored or sent anywhere, and there is no account to make.</p>
+      </div>
+      <ul class="flex flex-col gap-4 list-none p-0 lg:pt-14">
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>A Mac with Apple silicon (M1 or later)</span></li>
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>macOS 15 or later</span></li>
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Free, on the Mac App Store</span></li>
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>From the makers of <a href="../pare/" class="underline underline-offset-2" style="color:var(--ink)">Pare Studio</a></span></li>
+      </ul>
+    </section>
+
+    <p class="note">Sample photos from Unsplash by Alexey Topolyanskiy, Philippe Wuyts, Andrew Ridley and Joseph Barrientos. The video in the screenshots was made from a photo. The café portrait is our own. Sample videos from Pexels by cottonbro studio, Anastasia Shuraeva and Mikhail Nilov.</p>
+
+    <section class="mt-16 rounded-3xl bg-slate-50 border border-slate-100 px-6 py-12 text-center flex flex-col items-center gap-5">
+      <img class="app-icon" src="../../assets/pare-social/icon.webp" width="72" height="72" alt="">
+      <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Give Pare Social a go</h2>
+      <p class="text-slate-500 max-w-md">Free for macOS, coming to the Mac App Store.</p>
+      <span class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Coming soon</span>
+    </section>
+  </main>
+
+  <div data-asariko-footer></div>
+
+<script src="../../script.js"></script>
+<script>
+  // The app's preset list (Sources/PareSocial/Presets.json), in its own order.
+  const PRESETS = [
+    ['Instagram','ig-profile','Profile photo',320,320,1],['Instagram','ig-post','Post (square)',1080,1080],['Instagram','ig-landscape','Post (landscape)',1080,566],
+    ['Instagram','ig-portrait','Post (portrait)',1080,1350],['Instagram','ig-post-3x4','Post (3:4)',1080,1440],['Instagram','ig-story','Story / Reel',1080,1920],
+    ['Facebook','fb-profile','Profile photo',400,400,1],['Facebook','fb-cover','Cover',1640,924],['Facebook','fb-post','Post',1200,630],
+    ['Facebook','fb-event','Event cover',1920,1005,1],['Facebook','fb-story','Story',1080,1920],
+    ['TikTok','tt-video','Video / cover',1080,1920],['TikTok','tt-profile','Profile',200,200,1],
+    ['YouTube','yt-thumb','Thumbnail',1280,720],['YouTube','yt-channel','Channel art',2560,1440,1],['YouTube','yt-profile','Profile',800,800,1],
+    ['Pinterest','pin','Pin (standard)',1000,1500],['Pinterest','pin-square','Pin (square)',1000,1000],['Pinterest','pin-video','Pin (video)',1080,1920],
+    ['Web & marketing','og','Open Graph card',1200,630],['Web & marketing','web-hero','Hero banner (16:9)',1920,1080],['Web & marketing','web-banner','Wide web banner',1920,600],['Web & marketing','email-header','Email header',600,200]
+  ].map(([group, key, name, w, h, photoOnly]) => ({ group, key, name, w, h, photoOnly: !!photoOnly }));
+  // the app's own card labels: group abbreviation + name (Presets.swift, shortName)
+  const SHORT = { 'Instagram': 'IG', 'Facebook': 'FB', 'TikTok': 'TikTok', 'YouTube': 'YT', 'Pinterest': 'Pinterest', 'Web & marketing': 'Web' };
+  const PHOTOS = [['fjord', 'fjord.jpg'], ['canyon', 'canyon.jpg'], ['highlands', 'highlands.HEIC']];
+  const BASE = '../../assets/pare-social/crops/';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const groups = [...new Set(PRESETS.map(p => p.group))];
+
+  // ---------- Live demo ----------
+  (function () {
+    const side = document.getElementById('demoSide'), rows = document.getElementById('demoRows'), count = document.getElementById('demoCount');
+    if (!side) return;
+    const on = new Set(['ig-portrait', 'ig-story', 'fb-post', 'yt-thumb']);   // the same four ticks as the launch video
+    const tick = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6.2 5 8.5l4.5-5"/></svg>';
+    side.innerHTML = groups.map(g => `<h4>${esc(g)}</h4>` + PRESETS.filter(p => p.group === g).map(p => {
+      const r = p.w / p.h, sw = r >= 1 ? 13 : Math.max(5, Math.round(13 * r)), sh = r >= 1 ? Math.max(4, Math.round(13 / r)) : 13;
+      return `<button type="button" class="pre" data-key="${p.key}" aria-pressed="${on.has(p.key)}"><span class="box">${tick}</span>` +
+             `<span class="shape" style="width:${sw}px;height:${sh}px" aria-hidden="true"></span><span class="nm">${esc(p.name)}<span class="sr-only"> ${esc(p.group)}</span></span><span class="nm-s" aria-hidden="true">${esc(SHORT[p.group] + ' ' + p.name)}</span><span class="dim">${p.w}×${p.h}</span></button>`;
+    }).join('')).join('');
+    rows.innerHTML = PHOTOS.map(([id, file]) => `<div class="frow"><div class="frow-h"><img src="${BASE}${id}/source.webp" alt=""><b>${esc(file)}</b><span data-saved></span></div><div class="cards" data-photo="${id}"></div></div>`).join('');
+    function render(fresh) {
+      const list = PRESETS.filter(p => on.has(p.key));
+      rows.querySelectorAll('.cards').forEach(box => {
+        const id = box.dataset.photo;
+        box.innerHTML = list.length ? list.map(p =>
+          `<div class="card${p.key === fresh ? ' new' : ''}"><div class="pic"><img src="${BASE}${id}/${p.key}.webp" alt="${esc(SHORT[p.group] + ' ' + p.name)}, ${p.w}×${p.h}" loading="lazy"></div>` +
+          `<span class="lbl"><span class="ok" aria-hidden="true"></span>${esc(SHORT[p.group] + ' ' + p.name)}</span></div>`).join('')
+          : '<span class="empty">Tick a size to see it here.</span>';
+        box.parentElement.querySelector('[data-saved]').textContent = list.length ? `${list.length} ${list.length === 1 ? 'size' : 'sizes'} saved` : '';
+      });
+      count.textContent = `${list.length} ${list.length === 1 ? 'size' : 'sizes'}`;
+    }
+    side.addEventListener('click', e => {
+      const b = e.target.closest('.pre'); if (!b) return;
+      const k = b.dataset.key, now = !on.has(k);
+      now ? on.add(k) : on.delete(k);
+      b.setAttribute('aria-pressed', now);
+      render(now ? k : null);
+    });
+    render();
+    // phones: the chip row starts at the first ticked size
+    const first = side.querySelector('[aria-pressed="true"]');
+    if (first && getComputedStyle(side).overflowX === 'auto') side.scrollLeft = first.offsetLeft - 10;
+  })();
+
+  // ---------- Videos follow the face: one player, four clips; loads only when scrolled to ----------
+  (function () {
+    const v = document.getElementById('vplayer'); if (!v) return;
+    const CLIPS = [{ n: 1, ow: 1024, label: 'Coffee walk' }, { n: 2, ow: 1024, label: 'Standing outside' }, { n: 3, ow: 960, label: 'Hallway' }, { n: 4, ow: 960, label: 'On the phone' }];
+    const CW = 304, GAP = 18, V = '../../assets/pare-social/video/';
+    const pp = document.getElementById('vpp'), lab = document.getElementById('vlabels'), box = document.getElementById('vchips'), ring = document.getElementById('vring');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let cur = CLIPS[1], visible = false;
+    box.innerHTML = CLIPS.map(c => `<button type="button" class="vchip" data-n="${c.n}" aria-pressed="${c === cur}"><img src="${V}clip${c.n}-chip.jpg" alt="">${c.label}</button>`).join('');
+    function layout() {   // labels under each panel; the orange outline exactly on the Pare Social panel
+      const W = cur.ow + 2 * CW + 2 * GAP, k = v.clientWidth / W, x = cur.ow + CW + 2 * GAP;
+      lab.style.gridTemplateColumns = `${cur.ow}fr ${CW}fr ${CW}fr`; lab.style.columnGap = (GAP / W * 100) + '%';
+      Object.assign(ring.style, { left: x * k + 'px', width: CW * k + 'px', top: 0, height: v.clientHeight + 'px', borderRadius: 12 * k + 'px' });
+    }
+    function sync() { const p = v.paused; pp.classList.toggle('paused', p); pp.setAttribute('aria-label', p ? 'Play video' : 'Pause video'); }
+    function load(c, play) { cur = c; v.poster = `${V}clip${c.n}-web.jpg`; v.src = `${V}clip${c.n}-web.mp4`; layout(); if (play) v.play().catch(() => {}); }
+    box.addEventListener('click', e => { const b = e.target.closest('.vchip'); if (!b) return; const c = CLIPS.find(x => x.n === +b.dataset.n);
+      box.querySelectorAll('.vchip').forEach(x => x.setAttribute('aria-pressed', x === b)); load(c, !reduce || !v.paused); });
+    pp.addEventListener('click', () => { if (!v.src) load(cur, false); v.paused ? v.play().catch(() => {}) : v.pause(); });
+    v.addEventListener('play', sync); v.addEventListener('pause', sync); v.addEventListener('loadedmetadata', layout);
+    addEventListener('resize', layout); requestAnimationFrame(layout);
+    // plays only while on screen; reduced-motion visitors see the still until they press play
+    new IntersectionObserver(es => es.forEach(e => { visible = e.isIntersecting;
+      if (visible && !reduce) { if (!v.src) load(cur, false); v.play().catch(() => {}); } else if (!visible) v.pause(); }), { threshold: .3 }).observe(v);
+    sync();
+  })();
+
+  // ---------- Adjust Crop: All together / One by one ----------
+  (function () {
+    const seg = document.getElementById('adjSeg'), looks = document.getElementById('adjLooks');
+    if (!seg) return;
+    const thumb = seg.querySelector('.thumb');
+    function place() { const b = seg.querySelector('[aria-pressed="true"]'); thumb.style.width = b.offsetWidth + 'px'; thumb.style.transform = `translateX(${b.offsetLeft}px)`; }
+    seg.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b || b.getAttribute('aria-pressed') === 'true') return;
+      seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+      looks.querySelectorAll('.win').forEach(w => {
+        const show = w.dataset.k === b.dataset.k;
+        w.classList.toggle('off', !show); w.classList.toggle('in', show); w.setAttribute('aria-hidden', !show);
+      });
+      place();
+    });
+    addEventListener('resize', place); requestAnimationFrame(place);
+  })();
+
+  // ---------- Profile grid: tiles laid out as they appear on the profile, numbered in posting order ----------
+  (function () {
+    const g = document.getElementById('grid9'); if (!g) return;
+    // the app names tiles grid-1 … grid-9 in posting order; grid-1 is posted first and ends up bottom-right on the profile
+    const cells = []; for (let i = 9; i >= 1; i--) cells.push(i);
+    g.innerHTML = cells.map(n => `<figure><img src="${BASE}fjord/grid-${n}.webp" alt="" loading="lazy"><figcaption>${n}</figcaption></figure>`).join('');
+  })();
+
+  // ---------- Every size it makes ----------
+  (function () {
+    const box = document.getElementById('sizeList'); if (!box) return;
+    const half = [groups.slice(0, 3), groups.slice(3)];
+    box.innerHTML = half.map(gs => '<div>' + gs.map(g => {
+      const ps = PRESETS.filter(p => p.group === g);
+      return `<div class="pl-label">${esc(g)}<span>${ps.length}</span></div>` + ps.map(p =>
+        `<div class="pl-row"><b>${esc(p.name)}</b><span class="sz">${p.w} × ${p.h}</span><span class="kind">${p.photoOnly ? 'Photo only' : 'Photo and video'}</span></div>`).join('');
+    }).join('') + '</div>').join('');
+  })();
+</script>
+<script src="../../shared/header.js" defer></script>
+</body>
+</html>

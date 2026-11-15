@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pare Studio — Make Photos and Videos Smaller on Your Mac, Free | asariko</title>
+    <meta name="description" content="Pare Studio is a free macOS app that makes photos and videos smaller. Drop files in and get smaller copies next to the originals, with no visible loss in quality. Keeps orientation, HDR, colours and capture date. Coming soon." />
+    <link rel="canonical" href="https://asariko.net/projects/pare/">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#2c3e50">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="asariko">
+    <meta property="og:url" content="https://asariko.net/projects/pare/">
+    <meta property="og:title" content="Pare Studio — Make Photos and Videos Smaller on Your Mac, Free | asariko">
+    <meta property="og:description" content="A free macOS app that makes photos and videos smaller with no visible loss in quality. Coming soon.">
+    <meta property="og:image" content="https://asariko.net/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="apple-touch-icon" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } } }</script>
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+      :root { --ink: #2c3e50; --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); }
+      h1.text-slate-900, h2.text-slate-900 { color: var(--ink) !important; }
+      a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+      .back { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #475569; background: #fff; border: 1px solid #e2e8f0; padding: 8px 14px 8px 10px; border-radius: 999px; text-decoration: none; transition: border-color 150ms, transform 160ms var(--ease-out); }
+      .back:hover { border-color: #cbd5e1; color: var(--ink); }
+      .status-line { display: block; font-size: 15px; color: #64748b; }
+      .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+      .btn-p { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #fff; padding: 14px 22px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out); }
+      .btn-s { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #334155; border: 1px solid #e2e8f0; padding: 13px 22px; }
+      .btn-s:has(svg) { padding-top: 6px; padding-bottom: 6px; } /* big GitHub logo sets the height, like the old projects page */
+      .btn-s { border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform 160ms var(--ease-out), border-color 150ms; }
+      .btn-s:hover { border-color: #cbd5e1; }
+      @media (hover: hover) and (pointer: fine) { .btn-p:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0/.1), 0 4px 6px -4px rgb(0 0 0/.1); } }
+      .btn-p:active, .btn-s:active, .back:active { transform: scale(.97); }
+      /* a status label, not a button: becomes the Download button at launch */
+      .soon { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 10px; border-radius: 999px; font-size: 13.5px; font-weight: 500; line-height: 1; color: #475569; background: #fff; border: 1px solid #e2e8f0; }
+      .soon svg { width: 14px; height: 14px; color: #e8883a; flex: none; }
+      .app-icon { width: 72px; height: 72px; border-radius: 16px; filter: drop-shadow(0 6px 14px rgba(15,23,42,.18)); }
+      /* screenshots sit on a soft desktop-like backdrop, like a Mac wallpaper */
+      .desk { position: relative; border-radius: 20px; padding: 36px; background: linear-gradient(135deg, #c7d2fe 0%, #e9d5ff 45%, #fbcfe8 75%, #fde68a 100%); overflow: hidden; }
+      .win { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 0 0 .5px rgba(15,23,42,.18), 0 22px 50px -18px rgba(15,23,42,.45); background: #fff; }
+      .step { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: #fff; border: 1px solid #eef2f6; border-radius: 16px; }
+      .step-n { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #fff; font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; margin-bottom: 4px; }
+      .feat-wide { gap: 20px; }
+      /* same two halves as the boxes below: 24px padding + a 72px gap puts the slider exactly on the right boxes' content edges */
+      @media (min-width: 768px) { .feat.feat-wide { display: grid; grid-template-columns: 1fr 1fr; align-items: center; column-gap: 72px; padding: 24px; } }
+      .feat { display: flex; flex-direction: column; gap: 6px; padding: 24px; border-radius: 16px; background: #f8fafc; border: 1px solid #eef2f6; }
+      .point { display: flex; gap: 12px; align-items: flex-start; color: #475569; font-size: 16px; line-height: 1.6; }
+      .point-i { flex: none; color: var(--ink); margin-top: 3px; }
+      .note { margin-top: 16px; font-size: 14px; line-height: 1.6; color: #64748b; }
+      /* Portal mode: Pare's real states and words (MiniView.swift), in a Finder scene */
+      .mac { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif; }
+      .lights { display: flex; gap: 8px; } .lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; box-shadow: inset 0 0 0 .5px rgba(0,0,0,.15); }
+      .lights i:nth-child(2) { background: #febc2e; } .lights i:nth-child(3) { background: #28c840; }
+      .scene { position: relative; min-height: 470px; padding: 28px 24px 24px; touch-action: none; user-select: none; -webkit-user-select: none; }
+      .finder { position: relative; width: min(100%, 720px); height: 450px; border-radius: 12px; overflow: hidden; background: #fff; display: grid; grid-template-columns: 170px 1fr; box-shadow: 0 0 0 .5px rgba(0,0,0,.22), 0 24px 60px -20px rgba(15,23,42,.5); }
+      .f-side { background: rgba(236,236,238,.96); padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; border-right: 1px solid #e3e3e5; }
+      .f-side .lights { margin: 2px 4px 18px; }
+      .f-side h4 { margin: 6px 8px 4px; font-size: 11px; font-weight: 600; color: #8e8e93; }
+      .f-side > span:not(.lights) { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 6px; font-size: 13px; color: #1d1d1f; }
+      .f-side svg { width: 15px; height: 15px; color: #2f7cf6; flex: none; }
+      .f-side .on { background: rgba(0,0,0,.08); }
+      .f-main { display: flex; flex-direction: column; min-width: 0; }
+      .f-bar { height: 52px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 14px; border-bottom: 1px solid #ececec; color: #6e6e73; }
+      .f-bar svg { width: 16px; height: 16px; } .f-bar b { font-size: 13px; color: #1d1d1f; } .f-bar .sp { flex: 1; } .f-bar .lights { display: none; }
+      .f-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); align-content: start; gap: 10px 6px; padding: 16px 14px; overflow: hidden; }
+      .f-item { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 0; border: 0; background: none; cursor: default; font: inherit; color: inherit; border-radius: 6px; }
+      .f-thumb { width: 84px; height: 84px; display: grid; place-items: center; border-radius: 6px; }
+      .f-thumb img { max-width: 76px; max-height: 76px; display: block; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.28); border-radius: 2px; background: #fff; }
+      .f-name { max-width: 104px; font-size: 12px; line-height: 1.25; color: #1d1d1f; padding: 1px 5px; border-radius: 4px; text-align: center; overflow-wrap: break-word; }
+      .f-size { font-size: 11px; line-height: 1.2; color: #2a6ad8; }
+      .f-item.sel .f-thumb { background: rgba(0,0,0,.08); }
+      .f-item.sel .f-name { background: #0a64d8; color: #fff; }
+      .f-item:focus-visible { outline: 2px solid #0a64d8; outline-offset: 2px; }
+      .f-item.done { cursor: not-allowed; }
+      .f-item.fresh { transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out); }
+      .f-item.pre { opacity: 0; transform: scale(.92); }
+      .ghost { position: absolute; left: 0; top: 0; z-index: 30; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: .6; }
+      .ghost img { max-width: 70px; max-height: 70px; border: 2px solid #fff; box-shadow: 0 6px 16px rgba(0,0,0,.35); border-radius: 2px; }
+      .ghost span { font-size: 11px; padding: 1px 6px; border-radius: 4px; background: #0a64d8; color: #fff; }
+      .ghost.suck { transition: transform 220ms var(--ease-out), opacity 220ms var(--ease-out); opacity: 0; }
+      .f-wrap { position: relative; width: min(100% - 40px, 720px); margin: 0 auto; }
+      .finder { width: 100%; }
+      .portal-wrap { position: absolute; right: -44px; top: -18px; z-index: 25; }
+      .portal-label { position: absolute; right: -44px; top: 98px; z-index: 25; font-size: 11.5px; color: #3c3c43; background: rgba(255,255,255,.7); padding: 2px 8px; border-radius: 6px; }
+      .portal { position: relative; width: 108px; height: 108px; border-radius: 22px; background: #f1f1f1; box-shadow: 0 0 0 .5px rgba(0,0,0,.14), 0 8px 26px -4px rgba(0,0,0,.3); display: grid; place-items: center; text-align: center; color: #1d1d1f; transition: box-shadow 150ms var(--ease-out), transform 150ms var(--ease-out); }
+      .portal.target { box-shadow: 0 0 0 2.5px #e8883a, 0 8px 26px -4px rgba(0,0,0,.3); }
+      .portal.gulp { transform: scale(1.04); }
+      .p-exp { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; display: grid; place-items: center; color: #8a8a8e; } .p-exp svg { width: 11px; height: 11px; }
+      .m-state { display: none; flex-direction: column; align-items: center; gap: 6px; } .m-state.on { display: flex; }
+      .drop-ico { width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center; color: #e8883a; border: 2px dashed rgba(0,0,0,.18); } .drop-ico svg { width: 20px; height: 20px; }
+      .target .drop-ico { border-color: #e8883a; background: rgba(232,136,58,.1); }
+      .m-small { font-size: 11px; color: #6e6e73; } .m-accent { font-size: 11px; font-weight: 600; color: #c9661c; } .m-title { font-size: 12px; font-weight: 600; }
+      .ring { width: 40px; height: 40px; } .ring circle { fill: none; stroke-width: 4; } .ring .bg { stroke: rgba(0,0,0,.1); }
+      .ring .fg { stroke: #e8883a; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; }
+      .m-dot { width: 14px; height: 14px; border-radius: 50%; background: #5dbc5b; }
+      .demo-cursor { position: absolute; left: 0; top: 0; z-index: 40; width: 26px; height: 26px; pointer-events: none; opacity: 0; transition: opacity 200ms var(--ease-out); filter: drop-shadow(0 1px 2px rgba(0,0,0,.3)); }
+      .demo-cursor svg { width: 100%; height: 100%; display: block; }
+      .mini-btn { font: 500 13px/1 Inter, system-ui, sans-serif; color: #475569; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 9px 12px; cursor: pointer; transition: transform 100ms var(--ease-out), border-color 150ms; }
+      .mini-btn:hover { border-color: #cbd5e1; } .mini-btn:active { transform: scale(.97); }
+      .p-status { margin: 0; font-size: 13px; color: #64748b; min-height: 1.5em; text-align: center; }
+      /* Compare with the original: Pare's Compare window, working */
+      .cmpwin { border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 0 0 .5px rgba(15,23,42,.2), 0 22px 50px -18px rgba(15,23,42,.45); }
+      .cmp-title { height: 38px; display: flex; align-items: center; gap: 14px; padding: 0 14px; border-bottom: 1px solid #e5e5e5; font-size: 13px; font-weight: 700; color: #3c3c43; }
+      .cmp-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 8px 14px; font-size: 12px; color: #6e6e73; border-bottom: 1px solid #ececec; }
+      .cmp-head b { color: #1d1d1f; font-weight: 700; } .cmp-head .r { text-align: right; } .cmp-head .c { font-size: 11px; color: #8e8e93; }
+      .cmp-view { position: relative; background: #9b9b9b; aspect-ratio: 1400 / 800; overflow: hidden; cursor: ew-resize; touch-action: none; user-select: none; -webkit-user-select: none; }
+      .zoomer { position: absolute; inset: 0; transform-origin: 0 0; } .zoomer.anim { transition: transform 220ms var(--ease-out); }
+      .zoomer img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+      .zoomer img.orig { clip-path: inset(0 calc(100% - var(--line-x)) 0 0); }
+      .cmp-line { position: absolute; top: 0; bottom: 0; left: var(--line-x); width: 2px; margin-left: -1px; background: #fff; box-shadow: 0 0 0 .5px rgba(0,0,0,.25); pointer-events: none; }
+      .cmp-knob { position: absolute; top: 50%; left: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.3); display: grid; place-items: center; font-size: 12px; color: #475569; letter-spacing: -1px; }
+      .cmp-zoom { position: absolute; right: 10px; bottom: 10px; display: flex; gap: 4px; padding: 4px; border-radius: 9px; background: rgba(255,255,255,.88); box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+      .cmp-zoom button { width: 30px; height: 30px; border: 0; border-radius: 6px; background: none; font: 600 15px/1 -apple-system, system-ui, sans-serif; color: #1d1d1f; cursor: pointer; transition: background-color 120ms, transform 100ms var(--ease-out); }
+      .cmp-zoom button:hover { background: rgba(0,0,0,.06); } .cmp-zoom button:active { transform: scale(.94); }
+      .cmp-zoom span { min-width: 42px; display: grid; place-items: center; font: 500 12px/1 -apple-system, system-ui, sans-serif; color: #6e6e73; font-variant-numeric: tabular-nums; }
+      .cmp-range { width: 100%; margin-top: 10px; accent-color: var(--ink); }
+      /* Modern / Classic switch */
+      /* Modern / Classic: one pill slides under the labels; the old screenshot steps out before the new one comes in */
+      .seg { position: relative; display: inline-flex; padding: 4px; border-radius: 10px; background: #f1f5f9; gap: 2px; isolation: isolate; }
+      .seg .thumb { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 0; border-radius: 7px; background: #fff; box-shadow: 0 1px 2px rgba(15,23,42,.12); transition: transform 200ms var(--ease-in-out), width 200ms var(--ease-in-out); }
+      .seg button { position: relative; z-index: 1; border: 0; background: none; padding: 8px 16px; border-radius: 7px; font: 500 14px/1 Inter, system-ui, sans-serif; color: #475569; cursor: pointer; transition: color 150ms var(--ease-out), transform 100ms var(--ease-out); }
+      .seg button[aria-pressed="true"] { color: var(--ink); }
+      .seg button:active { transform: scale(.97); }
+      .looks { position: relative; }
+      .looks .win + .win { position: absolute; inset: 36px; width: calc(100% - 72px); }
+      .looks .win { transition: opacity 120ms ease, transform 120ms ease; }
+      .looks .win.off { opacity: 0; transform: scale(.985); }
+      .looks .win.in { transition: opacity 200ms var(--ease-out) 60ms, transform 200ms var(--ease-out) 60ms; }
+      /* transparent logo, before / after */
+      /* transparent background: drag the line, like Pare's Compare window */
+      /* checkerboard by default (the usual "see-through" pattern); swatches switch what is behind the logo */
+      .ba-row { display: flex; align-items: center; gap: 14px; width: 85%; } /* 15% smaller; keeps the left edge on the right boxes' content line */
+      @media (max-width: 767px) { .ba-row { width: 100%; } }
+      .ba-col { flex: 1 1 auto; min-width: 0; }
+      .sw-col { display: flex; flex-direction: column; gap: 10px; flex: none; }
+      .sw { width: 26px; height: 26px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; box-shadow: 0 0 0 1px rgba(15,23,42,.15); transition: transform 100ms var(--ease-out), box-shadow 150ms var(--ease-out); }
+      .sw:active { transform: scale(.92); }
+      .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink); }
+      .sw:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+      .checker { background-color: #fff; background-image: linear-gradient(45deg, #d9dde3 25%, transparent 25%), linear-gradient(-45deg, #d9dde3 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #d9dde3 75%), linear-gradient(-45deg, transparent 75%, #d9dde3 75%); background-size: 16px 16px; background-position: 0 0, 0 8px, 8px -8px, -8px 0; }
+      .sw.checker { background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0; }
+      .ba { position: relative; border-radius: 12px; background-color: var(--bg, #ff4400); padding: 12px; transition: background-color 200ms var(--ease-out); touch-action: none; user-select: none; -webkit-user-select: none; cursor: ew-resize; }
+      .ba.checker, .sw.checker { background-color: #fff; }
+      .ba-inner { position: relative; }
+      .ba img { display: block; width: 100%; height: auto; pointer-events: none; }
+      .ba .before { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+      .ba-line { position: absolute; top: 0; bottom: 0; left: calc(12px + (100% - 24px) * var(--p01)); width: 2px; margin-left: -1px; background: #fff; box-shadow: 0 0 0 .5px rgba(0,0,0,.15); pointer-events: none; }
+      .ba-knob { position: absolute; top: 50%; left: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.25); display: grid; place-items: center; color: #475569; font-size: 12px; letter-spacing: -1px; }
+      .ba-labels { display: flex; justify-content: space-between; font-size: 12px; color: #64748b; margin-top: 6px; }
+      .ba-range { width: 100%; margin-top: 2px; accent-color: var(--ink); }
+      /* comparison */
+      .cmp { width: 100%; border-collapse: collapse; font-size: 15px; }
+      .cmp th, .cmp td { padding: 12px 14px; border-bottom: 1px solid #eef2f6; text-align: center; }
+      .cmp th:first-child, .cmp td:first-child { text-align: left; color: #334155; }
+      .cmp thead th { font-size: 13px; font-weight: 600; color: #64748b; }
+      .cmp thead th.us { color: var(--ink); }
+      .cmp td.us { background: #f8fafc; }
+      .yes { color: #16a34a; font-weight: 600; } .no { color: #b42318; font-weight: 600; }
+      .yes::before { content: "\2713"; } .no::before { content: "\2715"; }
+      .yes span, .no span { font-size: 13px; font-weight: 500; margin-left: 5px; }
+      .bars { display: flex; flex-direction: column; gap: 22px; }
+      .bar-group h3 { font-size: 15px; font-weight: 600; color: var(--ink); margin: 0 0 10px; }
+      .bar-row { display: grid; grid-template-columns: 9.5rem 1fr; align-items: center; gap: 12px; margin-top: 8px; font-size: 14px; color: #475569; }
+      .bar-track { position: relative; height: 28px; border-radius: 6px; background: #f1f5f9; overflow: hidden; }
+      .bar-fill { position: absolute; inset: 0; border-radius: 6px; background: #cbd5e1; transform-origin: left center; transform: scaleX(var(--k)); transition: transform 300ms var(--ease-in-out); }
+      .bar-fill.us { background: var(--ink); }
+      .bar-label { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 500; color: #0f172a; white-space: nowrap; }
+      .bar-label.on-dark { color: #fff; }
+      .qseg { position: relative; align-self: flex-start; display: inline-flex; padding: 4px; border-radius: 10px; background: #f1f5f9; gap: 2px; isolation: isolate; }
+      .qseg .thumb { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 0; border-radius: 7px; background: #fff; box-shadow: 0 1px 2px rgba(15,23,42,.12); transition: transform 200ms var(--ease-in-out), width 200ms var(--ease-in-out); }
+      .qseg button { position: relative; z-index: 1; border: 0; background: none; padding: 7px 14px; border-radius: 7px; font: 500 14px/1 Inter, system-ui, sans-serif; color: #475569; cursor: pointer; transition: color 150ms var(--ease-out), transform 100ms var(--ease-out); }
+      .qseg button[aria-pressed="true"] { color: var(--ink); } .qseg button:active { transform: scale(.97); }
+      @media (max-width: 640px) { .desk { padding: 18px; } .looks .win + .win { inset: 18px; width: calc(100% - 36px); } .finder { grid-template-columns: 1fr; height: 620px; } .f-side { display: none; } .f-bar .lights { display: flex; } .scene { padding: 20px 10px 16px; } .f-grid { grid-template-columns: repeat(3, 1fr); padding: 12px 6px; } .f-thumb { width: 70px; height: 70px; } .f-thumb img { max-width: 64px; max-height: 64px; } .f-wrap { width: 100%; } .portal-wrap { right: 6px; top: 6px; } .portal-label { display: none; } .cmp-head { grid-template-columns: 1fr 1fr; } .cmp-head .c { display: none; } .bar-row { grid-template-columns: 1fr; gap: 4px; } }
+      @media (prefers-reduced-motion: reduce) { .looks .win, .looks .win.in, .seg .thumb { transition: none; } .zoomer.anim, .f-item.fresh, .ghost.suck, .bar-fill, .qseg .thumb { transition: none; } }
+    </style>
+</head>
+<body class="bg-white text-slate-900 selection:bg-slate-200 selection:text-slate-900 font-sans">
+  <div data-asariko-header style="height:96px"></div>
+
+  <main class="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pb-24">
+    <div class="pt-10"><a class="back" href="../#mac"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> All Mac apps</a></div>
+
+    <section class="mt-8 grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-12 items-center">
+      <div class="flex flex-col gap-5">
+        <img class="app-icon" src="../../assets/pare/icon.webp" width="72" height="72" alt="">
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 leading-[1.1]">Pare Studio</h1>
+        <p class="text-2xl font-semibold tracking-tight" style="color:var(--ink)">Trims the file, not the photo.</p>
+        <p class="text-lg text-slate-500 leading-relaxed">Drop photos and videos in, get smaller copies next to the originals, with no visible loss in quality.</p>
+        <div><span class="status-line">Free · macOS 15+ · Apple silicon</span></div>
+        <div class="actions pt-2"><span class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Coming soon</span><a class="btn-s" href="privacy/" style="padding-top:9px;padding-bottom:9px">Privacy <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></a></div>
+      </div>
+      <div class="desk"><img class="win" src="../../assets/pare/window-modern.webp" width="1200" height="1040" alt="Pare Studio's window: six photos and videos, each with its old size, new size and how much smaller it got"></div>
+    </section>
+
+    <section class="mt-24" aria-labelledby="how">
+      <h2 id="how" class="text-2xl md:text-3xl font-bold text-slate-900">How it works</h2>
+      <ol class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 list-none p-0">
+        <li class="step"><span class="step-n">1</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Drop your files</span><span class="text-slate-500 leading-relaxed">Drag photos, videos or whole folders onto the window or the Dock icon, or click +.</span></li>
+        <li class="step"><span class="step-n">2</span><span class="font-semibold text-[17px]" style="color:var(--ink)">It shrinks right away</span><span class="text-slate-500 leading-relaxed">No questions. Each file shows its old and new size, like 948 KB &rarr; 504 KB &middot; 47% smaller.</span></li>
+        <li class="step"><span class="step-n">3</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Your originals stay</span><span class="text-slate-500 leading-relaxed">The smaller copy is saved next to the original as name-small, so nothing is lost.</span></li>
+      </ol>
+    </section>
+
+    <section class="mt-24" aria-labelledby="portal-mode">
+      <div class="max-w-2xl">
+        <h2 id="portal-mode" class="text-2xl md:text-3xl font-bold text-slate-900">Portal mode</h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed">Shrink Pare to a small portal that stays on top of every window. Drag files into it from Finder, and the smaller copies appear right next to the originals. Double-click it to bring the full window back.</p>
+        <p class="note">The quiet way to use Pare: it waits in the corner and never gets in the way.</p>
+      </div>
+      <div class="mt-8 flex flex-col gap-4">
+        <div class="desk scene mac" id="scene">
+          <div class="f-wrap">
+          <div class="finder">
+            <div class="f-side" aria-hidden="true"><span class="lights"><i></i><i></i><i></i></span><h4>Favorites</h4><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Recents</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Desktop</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>Documents</span><span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v9M8 12l4 4 4-4"/></svg>Downloads</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-8 8"/></svg>Pictures</span></div>
+            <div class="f-main">
+              <div class="f-bar" aria-hidden="true"><span class="lights"><i></i><i></i><i></i></span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="opacity:.4"><path d="m9 18 6-6-6-6"/></svg>
+                <b>Pare samples</b><span class="sp"></span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4-4"/></svg></div>
+              <div class="f-grid" id="fgrid" role="listbox" aria-label="Files in the Pare samples folder"></div>
+            </div>
+          </div>
+          <div class="portal-wrap"><div class="portal" id="portal" role="img" aria-label="Pare Portal">
+            <span class="p-exp" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
+            <div class="m-state on" data-s="idle"><span class="drop-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span><span class="m-small">Drop here</span></div>
+            <div class="m-state" data-s="target"><span class="drop-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span><span class="m-accent">Release to shrink</span></div>
+            <div class="m-state" data-s="run"><svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="18"/><circle class="fg" id="pRing" cx="20" cy="20" r="18" stroke-dasharray="113.1" stroke-dashoffset="113.1"/></svg><span style="font-size:11px">1 of 1</span><span class="m-small" id="pRunName" style="font-size:10px;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span></div>
+            <div class="m-state" data-s="done"><span class="m-dot"></span><span class="m-title" id="pDoneTitle">1 file</span><span class="m-small" id="pDoneSub"></span></div>
+          </div></div>
+          <span class="portal-label">Stays on top</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2"><button type="button" class="mini-btn" id="pDrop">Drop the selected file in the portal</button><button type="button" class="mini-btn" id="pReset">Start over</button><button type="button" class="mini-btn" id="pDemo">Show me again</button></div>
+        <p class="p-status" id="pStatus" aria-live="polite">Click a file, then drag it into the portal.</p>
+      </div>
+    </section>
+
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-12 items-center" aria-labelledby="looks">
+      <div>
+        <h2 id="looks" class="text-2xl md:text-3xl font-bold text-slate-900">Two looks</h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed max-w-xl"><strong class="font-semibold" style="color:var(--ink)">Modern</strong> shows each file with a preview and its savings. <strong class="font-semibold" style="color:var(--ink)">Classic</strong> is a plain table with File, Size and Savings columns. Pick one in Settings.</p>
+        <div class="mt-6 seg" role="group" aria-label="Window look"><span class="thumb" aria-hidden="true"></span><button type="button" data-look="modern" aria-pressed="true">Modern</button><button type="button" data-look="classic" aria-pressed="false">Classic</button></div>
+      </div>
+      <div class="desk looks" id="looks-shots">
+        <img class="win w-modern" src="../../assets/pare/window-modern.webp" width="1200" height="1040" alt="The Modern look: a list with a preview of each file">
+        <img class="win w-classic off" src="../../assets/pare/window-classic.webp" width="1200" height="1040" alt="The Classic look: a plain table with File, Size and Savings columns" loading="lazy">
+      </div>
+    </section>
+
+    <section class="mt-24" aria-labelledby="what">
+      <h2 id="what" class="text-2xl md:text-3xl font-bold text-slate-900">What it does</h2>
+      <div class="mt-8 feat feat-wide">
+        <div><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Transparent backgrounds</h3><p class="text-slate-500 leading-relaxed">Turn a logo's flat white background transparent, even inside the letters, with clean edges on any colour. For PNG and WebP output.</p></div>
+          <div class="ba-row">
+            <div class="ba-col">
+            <div class="ba checker" id="ba" style="--pos:50%;--p01:.5"><div class="ba-inner">
+              <img src="../../assets/pare/logo-after.webp" width="800" height="310" alt="After: the logo with a transparent background" loading="lazy">
+              <img class="before" src="../../assets/pare/logo-before.webp" width="800" height="310" alt="" loading="lazy"></div>
+              <span class="ba-line" aria-hidden="true"><span class="ba-knob">&lsaquo; &rsaquo;</span></span></div>
+            <div class="ba-labels" aria-hidden="true"><span>Before</span><span>After</span></div>
+            <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+            </div>
+            <div class="sw-col" id="swCol" role="group" aria-label="Background behind the logo">
+              <button type="button" class="sw checker" data-bg="checker" aria-label="Checkerboard (see-through)" aria-pressed="true"></button>
+              <button type="button" class="sw" data-bg="#ff4400" style="background:#ff4400" aria-label="Orange" aria-pressed="false"></button>
+              <button type="button" class="sw" data-bg="#3b82f6" style="background:#3b82f6" aria-label="Blue" aria-pressed="false"></button>
+            </div>
+          </div>
+      </div>
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Shrink or Convert</h3><p class="text-slate-500 leading-relaxed">Shrink keeps each file's format and makes it smaller. Convert changes the format first, like PNG to WebP or MOV to MP4. Photos: JPEG, PNG, HEIC, WebP. Videos: MOV, MP4, M4V.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Keeps what phone photos need</h3><p class="text-slate-500 leading-relaxed">Photos stay the right way up and keep their HDR, their colours (Display P3) and the date they were taken. Videos keep HDR and their frame rate.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Location removed</h3><p class="text-slate-500 leading-relaxed">GPS location is taken out by default. Orientation, colours and capture date stay.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Changed your mind?</h3><p class="text-slate-500 leading-relaxed">Change a setting and run the same files again, or put the original back with one click. Whole folders work too, subfolders included.</p></div>
+      </div>
+      <div class="mt-16">
+        <h3 class="text-xl md:text-2xl font-bold" style="color:var(--ink)">Compare with the original</h3>
+        <p class="mt-3 text-lg text-slate-600 leading-relaxed max-w-2xl">Not sure about the result? Open it side by side with the original, drag the line and zoom in to check the detail.</p>
+      </div>
+      <div class="desk mt-6 mac">
+        <div class="cmpwin">
+          <div class="cmp-title"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>Compare</div>
+          <div class="cmp-head"><span><b>Original</b>&nbsp; fjord.jpg &nbsp;948 KB</span><span class="c">Drag the line · pinch to zoom</span><span class="r">fjord-small.jpg &nbsp;504 KB &nbsp;<b>Pare</b></span></div>
+          <div class="cmp-view" id="cmpView" style="--line-x:50%">
+            <div class="zoomer" id="zoomer"><img src="../../assets/pare/compare-pare.webp" width="1400" height="800" alt="The smaller file Pare made" loading="lazy"><img class="orig" src="../../assets/pare/compare-original.webp" width="1400" height="800" alt="The original photo" loading="lazy"></div>
+            <span class="cmp-line" aria-hidden="true"><span class="cmp-knob">&lsaquo; &rsaquo;</span></span>
+            <div class="cmp-zoom"><button type="button" id="zOut" aria-label="Zoom out">&minus;</button><span id="zLabel">100%</span><button type="button" id="zIn" aria-label="Zoom in">+</button></div>
+          </div>
+        </div>
+      </div>
+      <input class="cmp-range" id="cmpRange" type="range" min="0" max="100" value="50" aria-label="Move the line between the original and Pare's file">
+      <p class="note">Left is the original, right is the file Pare made at its default setting. Both are a full-resolution crop, saved without any loss, so nothing hides a difference.</p>
+      <p class="note" style="margin-top:6px">Sample photos from Unsplash by Alexey Topolyanskiy, Philippe Wuyts, Andrew Ridley, Wolfgang Lutz, Christian Joudrey and Joseph Barrientos. The videos were made from their photos.</p>
+    </section>
+
+    <section class="mt-24" aria-labelledby="vs">
+      <h2 id="vs" class="text-2xl md:text-3xl font-bold text-slate-900">Pare Studio and other tools</h2>
+      <p class="mt-4 text-lg text-slate-600 leading-relaxed max-w-2xl">We ran the same phone photos and videos through Pare and two popular free optimizers, each with its default settings.</p>
+      <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="overflow-x-auto">
+          <table class="cmp">
+            <thead><tr><th scope="col"></th><th scope="col" class="us">Pare</th><th scope="col">Tool A</th><th scope="col">Tool B</th></tr></thead>
+            <tbody>
+              <tr><td>Photos stay the right way up</td><td class="us"><span class="yes"><span>Yes</span></span></td><td><span class="no"><span>No</span></span></td><td><span class="yes"><span>Yes</span></span></td></tr>
+              <tr><td>Keeps HDR in photos</td><td class="us"><span class="yes"><span>Yes</span></span></td><td><span class="no"><span>No</span></span></td><td><span class="no"><span>No</span></span></td></tr>
+              <tr><td>Keeps the capture date</td><td class="us"><span class="yes"><span>Yes</span></span></td><td><span class="no"><span>No</span></span></td><td><span class="yes"><span>Yes</span></span></td></tr>
+              <tr><td>Keeps colours (Display P3)</td><td class="us"><span class="yes"><span>Yes</span></span></td><td><span class="no"><span>No</span></span></td><td><span class="yes"><span>Yes</span></span></td></tr>
+              <tr><td>HEIC photos</td><td class="us"><span class="yes"><span>Yes</span></span></td><td><span class="no"><span>No</span></span></td><td><span class="no"><span>No</span></span></td></tr>
+              <tr><td>Videos</td><td class="us"><span class="yes"><span>Yes</span></span></td><td><span class="no"><span>No</span></span></td><td><span class="yes"><span>Yes</span></span></td></tr>
+              <tr><td>Keeps HDR in videos</td><td class="us"><span class="yes"><span>Yes</span></span></td><td><span class="text-slate-400" aria-hidden="true">&ndash;</span><span class="sr-only">No videos</span></td><td><span class="no"><span>No</span></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="bars" id="bars">
+          <div class="qseg" role="group" aria-label="Pare setting"><span class="thumb" aria-hidden="true"></span><button type="button" data-q="n" aria-pressed="true">Normal</button><button type="button" data-q="s" aria-pressed="false">Smallest</button></div>
+          <div class="bar-group">
+            <h3>Phone photo, 4.54 MB</h3>
+            <div class="bar-row"><span>Pare</span><span class="bar-track"><span class="bar-fill us" data-n=".79" data-s=".55" style="--k:.79"></span><span class="bar-label on-dark" data-n="3.60 MB · HDR and date kept" data-s="2.49 MB · HDR and date kept">3.60 MB &middot; HDR and date kept</span></span></div>
+            <div class="bar-row"><span>Tool A</span><span class="bar-track"><span class="bar-fill" style="--k:.89"></span><span class="bar-label">4.03 MB &middot; turned sideways, HDR lost</span></span></div>
+            <div class="bar-row"><span>Tool B</span><span class="bar-track"><span class="bar-fill" style="--k:.44"></span><span class="bar-label">2.01 MB &middot; HDR lost</span></span></div>
+          </div>
+          <div class="bar-group">
+            <h3>Phone video, 14.7 MB (HDR)</h3>
+            <div class="bar-row"><span>Pare</span><span class="bar-track"><span class="bar-fill us" data-n=".45" data-s=".26" style="--k:.45"></span><span class="bar-label on-dark" data-n="6.6 MB · HDR kept" data-s="3.8 MB · HDR kept">6.6 MB &middot; HDR kept</span></span></div>
+            <div class="bar-row"><span>Tool A</span><span class="bar-track"><span class="bar-label">Videos not supported</span></span></div>
+            <div class="bar-row"><span>Tool B</span><span class="bar-track"><span class="bar-fill" style="--k:.31"></span><span class="bar-label">4.5 MB &middot; HDR lost</span></span></div>
+          </div>
+        </div>
+      </div>
+      <p class="note max-w-3xl">At Normal, Tool B makes JPEGs and videos smaller than Pare, but it drops HDR to do it. At Smallest, Pare is smaller on the video and still keeps HDR, and its photos keep HDR and the capture date. Tool A and Tool B are shown at their default settings. Measured in September and October 2026 on an Apple silicon Mac, with photos from a Samsung Galaxy S24 and a video from an iPhone 15. Newer versions of these tools may differ.</p>
+    </section>
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-2 gap-12" aria-labelledby="private">
+      <div>
+        <h2 id="private" class="text-2xl md:text-3xl font-bold text-slate-900">On your Mac, nothing uploaded</h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed max-w-xl">Pare Studio works entirely on your Mac. Your photos and videos are never sent anywhere, and there is no account to make.</p>
+      </div>
+      <ul class="flex flex-col gap-4 list-none p-0 lg:pt-14">
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>A Mac with Apple silicon (M1 or later)</span></li>
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>macOS 15 or later</span></li>
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Free, on the Mac App Store</span></li>
+      </ul>
+    </section>
+
+    <section class="mt-24 rounded-3xl bg-slate-50 border border-slate-100 px-6 py-12 text-center flex flex-col items-center gap-5">
+      <img class="app-icon" src="../../assets/pare/icon.webp" width="72" height="72" alt="">
+      <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Give Pare Studio a go</h2>
+      <p class="text-slate-500 max-w-md">Free for macOS.</p>
+      <div class="actions justify-center"><span class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Coming soon</span></div>
+    </section>
+  </main>
+
+  <div data-asariko-footer></div>
+
+<script src="../../script.js"></script>
+<script>
+  var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Modern / Classic: switches every 3 s by itself until someone picks one.
+  // Pauses on hover, keyboard focus and while off screen; off for reduced motion.
+  (function () {
+    var seg = document.querySelector('.seg'), thumb = seg.querySelector('.thumb'), btns = seg.querySelectorAll('button');
+    var shots = document.getElementById('looks-shots'), imgs = { modern: shots.querySelector('.w-modern'), classic: shots.querySelector('.w-classic') };
+    var look = 'modern', auto = !reduceMotion, paused = false, visible = false;
+    function placeThumb() { var b = seg.querySelector('[data-look="' + look + '"]'); thumb.style.width = b.offsetWidth + 'px'; thumb.style.transform = 'translateX(' + b.offsetLeft + 'px)'; }
+    function pick(next) {
+      if (next === look) return;
+      look = next;
+      btns.forEach(function (o) { o.setAttribute('aria-pressed', String(o.dataset.look === look)); });
+      placeThumb();
+      var on = imgs[look], off = imgs[look === 'modern' ? 'classic' : 'modern'];
+      off.classList.remove('in'); off.classList.add('off');
+      on.classList.add('in'); on.classList.remove('off');
+    }
+    btns.forEach(function (b) { b.addEventListener('click', function () { auto = false; pick(b.dataset.look); }); });
+    [seg, shots].forEach(function (el) {
+      el.addEventListener('mouseenter', function () { paused = true; });
+      el.addEventListener('mouseleave', function () { paused = false; });
+    });
+    seg.addEventListener('focusin', function () { paused = true; });
+    seg.addEventListener('focusout', function () { paused = false; });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }, { threshold: 0.4 }).observe(shots);
+    else visible = true;
+    setInterval(function () { if (auto && !paused && visible && !document.hidden) pick(look === 'modern' ? 'classic' : 'modern'); }, 3000);
+    window.addEventListener('resize', placeThumb);
+    placeThumb();
+  })();
+
+  // Portal mode: a Finder window and Pare's portal. Drag a file in and the smaller copy appears next to it.
+  // Plays a short demo once when it comes into view; any touch stops it. Sizes are Pare's real output on these files.
+  (function () {
+    var FILES = [
+      { name: 'camp.png', small: 'camp-small.png', b: 1953881, a: 1566993, img: '../../assets/pare/finder-camp.webp' },
+      { name: 'canyon.jpg', small: 'canyon-small.jpg', b: 989074, a: 500264, img: '../../assets/pare/finder-canyon.webp' },
+      { name: 'coast.mov', small: 'coast-small.mov', b: 12550136, a: 1972851, img: '../../assets/pare/finder-coast.webp' },
+      { name: 'fjord.jpg', small: 'fjord-small.jpg', b: 948244, a: 504359, img: '../../assets/pare/finder-fjord.webp' },
+      { name: 'highlands.HEIC', small: 'highlands-small.HEIC', b: 366427, a: 243504, img: '../../assets/pare/finder-highlands.webp' },
+      { name: 'valley.mp4', small: 'valley-small.mp4', b: 12491720, a: 3004519, img: '../../assets/pare/finder-valley.webp' }
+    ];
+    var grid = document.getElementById('fgrid'), scene = document.getElementById('scene'), portal = document.getElementById('portal');
+    var status = document.getElementById('pStatus'), ring = document.getElementById('pRing'), C = 113.1;
+    var state = 'idle', raf = 0, sel = null, drag = null, ghost = null, count = 0, saved = 0;
+    function mb(n) { return n >= 1e6 ? (n / 1e6).toFixed(1) + ' MB' : Math.round(n / 1e3) + ' KB'; } // like Finder
+    function show(s) { state = s; portal.querySelectorAll('.m-state').forEach(function (el) { el.classList.toggle('on', el.dataset.s === s); }); portal.classList.toggle('target', s === 'target'); }
+    function rest() { show(count ? 'done' : 'idle'); }
+    function runRing(done) {
+      show('run'); var t0 = performance.now(), D = reduceMotion ? 1 : 900; cancelAnimationFrame(raf);
+      (function tick(now) { var k = Math.min(1, (now - t0) / D); ring.setAttribute('stroke-dashoffset', String(C * (1 - k)));
+        if (k < 1) raf = requestAnimationFrame(tick); else { show('done'); done(); } })(t0);
+    }
+    function item(f, small) {
+      var el = document.createElement('button'), name = small ? f.small : f.name;
+      el.type = 'button'; el.className = 'f-item' + (small ? ' done is-small' : ''); el.setAttribute('role', 'option'); el.setAttribute('aria-selected', 'false');
+      el.dataset.name = name; el._f = f;
+      el.innerHTML = '<span class="f-thumb"><img src="' + f.img + '" alt=""></span><span class="f-name">' + name.replace(/([_-])/g, '$1<wbr>') + '</span><span class="f-size">' + mb(small ? f.a : f.b) + '</span>';
+      return el;
+    }
+    function select(el) {
+      [].forEach.call(grid.children, function (c) { c.classList.toggle('sel', c === el); c.setAttribute('aria-selected', String(c === el)); c.tabIndex = c === el ? 0 : -1; });
+      sel = el;
+    }
+    function build() { grid.innerHTML = ''; FILES.forEach(function (f) { grid.appendChild(item(f, false)); }); select(grid.children[1]); count = 0; saved = 0; }
+    function inPortal(x, y) { var r = portal.getBoundingClientRect(); return x > r.left - 12 && x < r.right + 12 && y > r.top - 12 && y < r.bottom + 12; }
+    function local(x, y) { var r = scene.getBoundingClientRect(); return { x: x - r.left, y: y - r.top }; }
+    function centre(el) { var r = el.getBoundingClientRect(); return local(r.left + r.width / 2, r.top + r.height / 2); }
+    function makeGhost(f) { var g = document.createElement('div'); g.className = 'ghost'; g.innerHTML = '<img src="' + f.img + '" alt=""><span>' + f.name + '</span>'; scene.appendChild(g); return g; }
+    function suck(g) {
+      var c = centre(portal);
+      if (reduceMotion) g.remove(); else { g.classList.add('suck'); g.style.transform = 'translate(' + (c.x - 40) + 'px,' + (c.y - 36) + 'px) scale(.25)'; setTimeout(function () { g.remove(); }, 240); }
+      portal.classList.add('gulp'); setTimeout(function () { portal.classList.remove('gulp'); }, 160);
+    }
+    function shrink(el) {
+      var f = el._f; el.classList.add('done'); status.textContent = 'Shrinking ' + f.name + '…';
+      document.getElementById('pRunName').textContent = f.name;
+      runRing(function () {
+        count++; saved += f.b - f.a;
+        document.getElementById('pDoneTitle').textContent = count === 1 ? '1 file' : count + ' files';
+        document.getElementById('pDoneSub').textContent = mb(saved) + ' saved';
+        var n = item(f, true); el.after(n);
+        if (!reduceMotion) { n.classList.add('pre', 'fresh'); requestAnimationFrame(function () { requestAnimationFrame(function () { n.classList.remove('pre'); }); }); }
+        status.textContent = f.small + ' saved next to the original: ' + mb(f.b) + ' → ' + mb(f.a) + '.';
+      });
+    }
+
+    grid.addEventListener('pointerdown', function (e) {
+      var el = e.target.closest('.f-item'); if (!el) return; select(el);
+      if (el.classList.contains('done')) { status.textContent = el.classList.contains('is-small') ? 'This is the smaller copy Pare made.' : 'Already shrunk. Start over to try it again.'; return; }
+      if (state === 'run') return;
+      e.preventDefault(); grid.setPointerCapture(e.pointerId); drag = { el: el, x: e.clientX, y: e.clientY, live: false };
+    });
+    grid.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      if (!drag.live) { if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 4) return; drag.live = true; ghost = makeGhost(drag.el._f); }
+      var p = local(e.clientX, e.clientY); ghost.style.transform = 'translate(' + (p.x - 40) + 'px,' + (p.y - 36) + 'px)';
+      var over = inPortal(e.clientX, e.clientY);
+      if (over && state !== 'target') show('target'); else if (!over && state === 'target') rest();
+    });
+    function end(e) {
+      if (!drag) return; var d = drag; drag = null; if (!d.live) return;
+      if (inPortal(e.clientX, e.clientY)) { suck(ghost); ghost = null; shrink(d.el); } else { ghost.remove(); ghost = null; rest(); }
+    }
+    grid.addEventListener('pointerup', end); grid.addEventListener('pointercancel', end);
+    grid.addEventListener('keydown', function (e) {
+      var items = [].slice.call(grid.children), i = items.indexOf(sel), n = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = items[Math.min(items.length - 1, i + 1)];
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = items[Math.max(0, i - 1)];
+      if (n) { e.preventDefault(); select(n); n.focus(); }
+    });
+    document.getElementById('pDrop').addEventListener('click', function () {
+      if (demo) reset();
+      if (!sel || state === 'run') return;
+      if (sel.classList.contains('done')) { status.textContent = 'Pick a file that has not been shrunk yet.'; return; }
+      show('target'); var el = sel; setTimeout(function () { shrink(el); }, reduceMotion ? 0 : 350);
+    });
+    function reset() {
+      stopDemo(); cancelAnimationFrame(raf); ring.setAttribute('stroke-dashoffset', String(C));
+      document.getElementById('pDoneSub').textContent = ''; build(); show('idle'); status.textContent = 'Click a file, then drag it into the portal.';
+    }
+
+    // the demo
+    var cur = document.createElement('div'); cur.className = 'demo-cursor'; cur.setAttribute('aria-hidden', 'true');
+    cur.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 2.5v17.2l4.3-4.1 2.8 6.4 3-1.3-2.8-6.3h6z" fill="#0f172a" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+    scene.appendChild(cur);
+    var demo = null, demoGhost = null, played = false;
+    function eio(x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+    function lerp(a, b, k) { return a + (b - a) * k; }
+    function place(x, y, sc) { cur.style.transform = 'translate(' + (x - 4) + 'px,' + (y - 2) + 'px) scale(' + (sc || 1) + ')'; }
+    function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+    function tween(d, fn, tok) { return new Promise(function (res) { var t0 = performance.now(); (function k(now) { if (tok.stop) return res(); var p = Math.min(1, (now - t0) / d); fn(eio(p)); if (p < 1) requestAnimationFrame(k); else res(); })(t0); }); }
+    function stopDemo() { if (!demo) return; demo.stop = true; demo = null; if (demoGhost) { demoGhost.remove(); demoGhost = null; } cur.style.opacity = 0; }
+    async function playDemo() {
+      if (demo || reduceMotion || state === 'run') return;
+      var el = [].find.call(grid.children, function (c) { return c.dataset.name === 'canyon.jpg' && !c.classList.contains('done'); });
+      if (!el) return;
+      var tok = { stop: false }; demo = tok; played = true; status.textContent = 'Watch, then try it yourself.';
+      var a = centre(el.querySelector('.f-thumb')), b = centre(portal), s = { x: a.x - 130, y: a.y + 110 };
+      place(s.x, s.y); cur.style.opacity = 1;
+      await tween(650, function (k) { place(lerp(s.x, a.x, k), lerp(s.y, a.y, k)); }, tok); if (tok.stop) return;
+      place(a.x, a.y, .9); select(el); await wait(160); if (tok.stop) return;
+      var g = makeGhost(el._f); demoGhost = g;
+      await tween(950, function (k) { var x = lerp(a.x, b.x, k), y = lerp(a.y, b.y, k) - Math.sin(k * Math.PI) * 50; place(x, y, .9); g.style.transform = 'translate(' + (x - 40) + 'px,' + (y - 36) + 'px)';
+        if (k > .85 && state !== 'target') show('target'); }, tok); if (tok.stop) return;
+      await wait(260); if (tok.stop) return;
+      demoGhost = null; suck(g); place(b.x, b.y, 1); shrink(el);
+      await wait(1400); if (tok.stop) return;
+      await tween(420, function (k) { place(b.x - 40 * k, b.y + 90 * k); cur.style.opacity = String(1 - k); }, tok); if (tok.stop) return;
+      demo = null; status.textContent = 'Your turn: drag any file into the portal.';
+    }
+    grid.addEventListener('pointerdown', function (e) { if (demo) { reset(); e.stopPropagation(); } }, true);
+    portal.addEventListener('pointerdown', function (e) { if (demo) { reset(); e.stopPropagation(); } }, true);
+    document.getElementById('pDemo').addEventListener('click', function () { reset(); requestAnimationFrame(playDemo); });
+    document.getElementById('pReset').addEventListener('click', reset);
+    portal.addEventListener('dblclick', reset);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { if (e[0].isIntersecting && !played) playDemo(); }, { threshold: 0.6 }).observe(scene);
+    build();
+  })();
+
+  // Compare with the original: drag the line, zoom with the buttons or a trackpad pinch
+  (function () {
+    var view = document.getElementById('cmpView'), z = document.getElementById('zoomer'), range = document.getElementById('cmpRange'), label = document.getElementById('zLabel');
+    var pos = 50, scale = 1, tx = 0, ty = 0, down = false, STEPS = [1, 1.5, 2, 3, 4];
+    function apply(anim) { z.classList.toggle('anim', !!anim && !reduceMotion); z.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')'; label.textContent = Math.round(scale * 100) + '%'; }
+    function clampPan() { var w = view.clientWidth, h = view.clientHeight; tx = Math.min(0, Math.max(w - w * scale, tx)); ty = Math.min(0, Math.max(h - h * scale, ty)); }
+    function zoomAt(next, px, py, anim) { next = Math.max(1, Math.min(4, next)); var ix = (px - tx) / scale, iy = (py - ty) / scale; scale = next; tx = px - ix * scale; ty = py - iy * scale; clampPan(); apply(anim); }
+    // the line sits in window coordinates; the clip lives in photo coordinates, so convert through the zoom
+    function setLine(p) {
+      pos = Math.max(0, Math.min(100, p)); range.value = Math.round(pos); view.style.setProperty('--line-x', pos + '%');
+      var w = view.clientWidth, imgX = ((pos / 100) * w - tx) / scale;
+      z.style.setProperty('--line-x', Math.max(0, Math.min(100, imgX / w * 100)) + '%');
+    }
+    function pct(x) { var r = view.getBoundingClientRect(); return (x - r.left) / r.width * 100; }
+    view.addEventListener('pointerdown', function (e) { if (e.target.closest('.cmp-zoom')) return; down = true; view.setPointerCapture(e.pointerId); setLine(pct(e.clientX)); });
+    view.addEventListener('pointermove', function (e) { if (down) setLine(pct(e.clientX)); });
+    view.addEventListener('pointerup', function () { down = false; }); view.addEventListener('pointercancel', function () { down = false; });
+    view.addEventListener('wheel', function (e) { if (!e.ctrlKey) return; e.preventDefault(); var r = view.getBoundingClientRect();
+      zoomAt(scale * Math.exp(-e.deltaY * 0.01), e.clientX - r.left, e.clientY - r.top, false); setLine(pos); }, { passive: false });
+    function step(dir) {
+      var n = dir > 0 ? (STEPS.find(function (s) { return s > scale + 0.01; }) || 4) : (STEPS.slice().reverse().find(function (s) { return s < scale - 0.01; }) || 1);
+      zoomAt(n, view.clientWidth * pos / 100, view.clientHeight * 0.55, true); setLine(pos);
+    }
+    document.getElementById('zIn').addEventListener('click', function () { step(1); });
+    document.getElementById('zOut').addEventListener('click', function () { step(-1); });
+    range.addEventListener('input', function () { setLine(+range.value); });
+    window.addEventListener('resize', function () { clampPan(); apply(false); setLine(pos); });
+    setLine(50);
+  })();
+
+  // Size chart: Normal / Smallest changes Pare's bars only
+  (function () {
+    var box = document.getElementById('bars'), seg = box.querySelector('.qseg'), thumb = seg.querySelector('.thumb'), btns = seg.querySelectorAll('button'), q = 'n';
+    function place() { var b = seg.querySelector('[data-q="' + q + '"]'); thumb.style.width = b.offsetWidth + 'px'; thumb.style.transform = 'translateX(' + b.offsetLeft + 'px)'; }
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        q = b.dataset.q; btns.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); }); place();
+        box.querySelectorAll('.bar-fill[data-n]').forEach(function (el) {
+          var k = parseFloat(el.dataset[q]), lab = el.nextElementSibling, inside = k >= .4;
+          el.style.setProperty('--k', k); lab.textContent = lab.dataset[q];
+          lab.classList.toggle('on-dark', inside); lab.style.left = inside ? '' : 'calc(' + (k * 100) + '% + 8px)';
+        });
+      });
+    });
+    window.addEventListener('resize', place); place();
+  })();
+
+  // Transparent background: drag the line (or use the slider)
+  (function () {
+    var ba = document.getElementById('ba'), range = document.getElementById('baRange'), down = false;
+    function set(p) { p = Math.max(0, Math.min(100, p)); ba.style.setProperty('--pos', p + '%'); ba.style.setProperty('--p01', p / 100); range.value = Math.round(p); }
+    function fromX(x) { var r = ba.querySelector('.ba-inner').getBoundingClientRect(); return (x - r.left) / r.width * 100; }
+    ba.addEventListener('pointerdown', function (e) { down = true; ba.setPointerCapture(e.pointerId); set(fromX(e.clientX)); });
+    ba.addEventListener('pointermove', function (e) { if (down) set(fromX(e.clientX)); });
+    ba.addEventListener('pointerup', function () { down = false; }); ba.addEventListener('pointercancel', function () { down = false; });
+    range.addEventListener('input', function () { set(+range.value); });
+    document.querySelectorAll('#swCol .sw').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var bg = b.dataset.bg; ba.classList.toggle('checker', bg === 'checker'); if (bg !== 'checker') ba.style.setProperty('--bg', bg);
+        document.querySelectorAll('#swCol .sw').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+      });
+    });
+  })();
+</script>
+<script src="../../shared/header.js" defer></script>
+</body>
+</html>

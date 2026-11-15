@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pare PDF — Crop the Same Spot From Every PDF Page, on Your Mac | asariko</title>
+    <meta name="description" content="Pare PDF is a free macOS app that crops the same spot from many PDF pages at once and combines PDFs. Draw one box, pick all, odd, even or a range of pages, and save. Works offline. Coming soon to the Mac App Store." />
+    <link rel="canonical" href="https://asariko.net/projects/pare-pdf/">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#2c3e50">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="asariko">
+    <meta property="og:url" content="https://asariko.net/projects/pare-pdf/">
+    <meta property="og:title" content="Pare PDF — Crop the Same Spot From Every PDF Page, on Your Mac | asariko">
+    <meta property="og:description" content="A free macOS app: draw one box and crop it from every PDF page, or combine PDFs in the order you want. Coming soon.">
+    <meta property="og:image" content="https://asariko.net/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="apple-touch-icon" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } } }</script>
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+      :root { --ink: #2c3e50; --amber: #f2711c;  /* the app's accent colour (its icon is #FFC24B → #F2711C) */ --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
+      h1.text-slate-900, h2.text-slate-900 { color: var(--ink) !important; }
+      a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+      .back { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #475569; background: #fff; border: 1px solid #e2e8f0; padding: 8px 14px 8px 10px; border-radius: 999px; text-decoration: none; transition: border-color 150ms, transform 160ms var(--ease-out); }
+      .back:hover { border-color: #cbd5e1; color: var(--ink); }
+      .back:active { transform: scale(.97); }
+      .status-line { display: block; font-size: 15px; color: #64748b; }
+      .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+      .soon { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 10px; border-radius: 999px; font-size: 13.5px; font-weight: 500; line-height: 1; color: #475569; background: #fff; border: 1px solid #e2e8f0; }
+      .soon svg { width: 14px; height: 14px; color: var(--amber); flex: none; }
+      .app-icon { width: 72px; height: 72px; border-radius: 16px; filter: drop-shadow(0 6px 14px rgba(15,23,42,.18)); }
+      .desk { position: relative; border-radius: 20px; padding: 36px; background: linear-gradient(135deg, #c7d2fe 0%, #e9d5ff 45%, #fbcfe8 75%, #fde68a 100%); overflow: hidden; }
+      .step { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: #fff; border: 1px solid #eef2f6; border-radius: 16px; }
+      .step-n { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #fff; font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; margin-bottom: 4px; }
+      .feat { display: flex; flex-direction: column; gap: 6px; padding: 24px; border-radius: 16px; background: #f8fafc; border: 1px solid #eef2f6; }
+      .point { display: flex; gap: 12px; align-items: flex-start; color: #475569; font-size: 16px; line-height: 1.6; }
+      .point-i { flex: none; color: var(--ink); margin-top: 3px; }
+      .demo-note { margin-top: 12px; font-size: 13.5px; color: #64748b; }
+
+      /* ---------- Live demo: Pare PDF's window, rebuilt from its SwiftUI views (CropView, CombineView) ---------- */
+      .mac { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif; font-size: 13px; color: #1d1d1f; }
+      .app { border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 0 0 .5px rgba(15,23,42,.2), 0 22px 50px -18px rgba(15,23,42,.45); }
+      .tb { height: 46px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 14px; background: #f6f6f6; border-bottom: 1px solid #e3e3e3; }
+      .lights { display: flex; gap: 8px; } .lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; box-shadow: inset 0 0 0 .5px rgba(0,0,0,.15); }
+      .lights i:nth-child(2) { background: #febc2e; } .lights i:nth-child(3) { background: #28c840; }
+      .tabs { display: inline-flex; padding: 2px; border-radius: 7px; background: #e4e4e6; }
+      .tabs button { border: 0; background: none; font: inherit; font-size: 12.5px; padding: 3px 16px; border-radius: 5px; color: #1d1d1f; cursor: pointer; }
+      .tabs button[aria-pressed="true"] { background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.15); }
+      .tb-icons { justify-self: end; display: flex; gap: 16px; color: #6e6e73; } .tb-icons svg { width: 15px; height: 15px; }
+      .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 9px 14px; }
+      .row.opts { gap: 8px 16px; background: #f4f4f5; border-top: 1px solid #ececec; }
+      .b { font: inherit; font-size: 12.5px; line-height: 1; padding: 5px 10px; border-radius: 6px; border: 0; background: #fff; color: #1d1d1f; box-shadow: 0 0 0 .5px rgba(0,0,0,.22), 0 1px 1px rgba(0,0,0,.08); cursor: pointer; white-space: nowrap; }
+      .b:active { background: #ececec; }
+      .b.p { background: var(--amber); color: #fff; box-shadow: none; font-weight: 500; }
+      .b.p:active { filter: brightness(.94); }
+      .b:disabled { opacity: .45; cursor: default; }
+      .fname { color: #6e6e73; font-size: 12.5px; }
+      .mac label { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; white-space: nowrap; }
+      .mac select, .mac input { font: inherit; font-size: 12.5px; color: #1d1d1f; padding: 3px 6px; border-radius: 6px; border: 0; background: #fff; box-shadow: 0 0 0 .5px rgba(0,0,0,.22), 0 1px 1px rgba(0,0,0,.08); }
+      .mac input { width: 150px; } .mac input:disabled, .mac select:disabled { opacity: .45; }
+      .stat { font-size: 12.5px; color: #1d1d1f; display: inline-flex; align-items: center; gap: 8px; }
+      .stat .link { color: #0a64d8; }
+      .hint { font-size: 12.5px; color: #a1a1a6; }
+      .stage { background: #e9e9eb; border-top: 1px solid #e0e0e2; height: 430px; overflow: auto; padding: 22px; }
+      .stage.c { height: 330px; }
+      .pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--pw, 120px), var(--pw, 120px))); justify-content: center; gap: 18px; }
+      .pg { position: relative; aspect-ratio: 210 / 297; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); cursor: crosshair; touch-action: none; user-select: none; }
+      .pg svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+      .pg .badge { position: absolute; right: 4px; bottom: 4px; font-size: 10px; line-height: 1; color: #fff; padding: 3px 5px; border-radius: 3px; background: rgba(0,0,0,.65); font-variant-numeric: tabular-nums; }
+      .box { position: absolute; border: 2px dashed #2a6fd6; background: rgba(42,111,214,.08); pointer-events: none; }
+      .box.red { border-color: #e33; background: rgba(227,51,51,.08); }
+      .box.pop { animation: pop 260ms var(--ease-out) both; }
+      @keyframes pop { from { opacity: 0; transform: scale(.94); } }
+      .cursor { position: absolute; left: 0; top: 0; width: 18px; height: 18px; pointer-events: none; z-index: 5; opacity: 0; transition: opacity 200ms; }
+      .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px; max-width: 760px; margin: 0 auto; }
+      .ccard { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 10px 10px; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.14); }
+      .ccard.moved { animation: pop 220ms var(--ease-out) both; }
+      .ccard .num { position: absolute; left: 8px; top: 8px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #fff; background: var(--amber); }
+      .ccard .th { width: 64%; aspect-ratio: 210 / 297; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+      .ccard .th svg { width: 100%; height: 100%; display: block; }
+      .ccard b { font-size: 12.5px; font-weight: 500; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .ccard small { font-size: 11.5px; color: #6e6e73; }
+      .ccard .acts { display: flex; gap: 6px; }
+      .ccard .acts button { width: 26px; height: 22px; padding: 0; font-size: 10px; }
+      .empty { padding-top: 70px; text-align: center; color: #8e8e93; }
+      @media (max-width: 640px) {
+        .tb { grid-template-columns: auto 1fr auto; gap: 10px; } .tabs { justify-self: center; } .tb-icons { gap: 12px; }
+        .hint { display: none; }
+        .stage { height: 380px; padding: 14px; }
+        .pages { --pw: 92px !important; gap: 12px; }
+        .cards { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      }
+
+      /* Mini portal, rebuilt from MiniView.swift */
+      .portal { width: 132px; height: 132px; border-radius: 22px; background: rgba(255,255,255,.78); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 0 0 .5px rgba(0,0,0,.14), 0 6px 24px rgba(0,0,0,.25); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+      .portal .ic { width: 48px; height: 48px; border-radius: 13px; border: 2px dashed rgba(0,0,0,.18); display: grid; place-items: center; color: var(--amber); }
+      .portal span { font-size: 11px; color: #6e6e73; } .portal small { font-size: 10px; color: #6e6e73; margin-top: -4px; }
+      .portal .ex { position: absolute; right: 9px; top: 9px; color: #8e8e93; }
+      .portal.on { box-shadow: 0 0 0 2.5px var(--amber), 0 6px 24px rgba(0,0,0,.25); }
+      .portal.on .ic { border-color: var(--amber); background: rgba(242,113,28,.1); } .portal.on span { color: var(--amber); font-weight: 600; }
+
+      @media (max-width: 640px) { .desk { padding: 18px; } }
+      @media (prefers-reduced-motion: reduce) { .box.pop, .ccard.moved { animation: none; } .cursor { transition: none; } }
+    </style>
+</head>
+<body class="bg-white text-slate-900 selection:bg-slate-200 selection:text-slate-900 font-sans">
+  <div data-asariko-header style="height:96px"></div>
+
+  <main class="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pb-24">
+    <div class="pt-10"><a class="back" href="../#mac"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> All Mac apps</a></div>
+
+    <section class="mt-8 grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12 items-center">
+      <div class="flex flex-col gap-5">
+        <div class="flex items-center gap-4"><img class="app-icon" src="../../assets/pare-pdf/icon.webp" width="72" height="72" alt=""><h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 leading-[1.1]">Pare PDF</h1></div>
+        <p class="text-2xl font-semibold tracking-tight" style="color:var(--ink)">Draw one box, crop every page.</p>
+        <p class="text-lg text-slate-500 leading-relaxed">Open a PDF, drag a box around the part you need, and Pare PDF crops that same spot from every page you pick. It also combines PDFs in the order you set.</p>
+        <div><span class="status-line">Free · macOS 15+ · Apple silicon · Mac App Store</span></div>
+        <div class="actions pt-2"><span class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Coming soon</span></div>
+      </div>
+      <div>
+        <div class="app mac" data-demo="crop" id="demo"></div>
+        <p class="demo-note">Try it: drag a box on any page, then change Pages. The report is a mock-up.</p>
+      </div>
+    </section>
+
+    <section class="mt-24" aria-labelledby="how">
+      <h2 id="how" class="text-2xl md:text-3xl font-bold text-slate-900">How it works</h2>
+      <ol class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 list-none p-0">
+        <li class="step"><span class="step-n">1</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Open a PDF</span><span class="text-slate-500 leading-relaxed">Drop it on the window or the Dock icon, or use Open With. Every page shows at once.</span></li>
+        <li class="step"><span class="step-n">2</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Draw one box</span><span class="text-slate-500 leading-relaxed">Drag around a chart, a stamp or a header. A blue copy shows on every page that will be cropped.</span></li>
+        <li class="step"><span class="step-n">3</span><span class="font-semibold text-[17px]" style="color:var(--ink)">Save Crop</span><span class="text-slate-500 leading-relaxed">You get one new PDF, or a .zip with a file per page, saved next to the original.</span></li>
+      </ol>
+    </section>
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12 items-center" aria-labelledby="combine">
+      <div class="flex flex-col gap-4">
+        <h2 id="combine" class="text-2xl md:text-3xl font-bold text-slate-900">Combine PDFs</h2>
+        <p class="text-lg text-slate-500 leading-relaxed">Add two or more PDFs and put them in order. Drag the cards in the app, or use the arrows. Save Combine makes one file. Send to Crop opens the result in Crop, so you can crop across all of them.</p>
+      </div>
+      <div>
+        <div class="app mac" data-demo="combine"></div>
+        <p class="demo-note">Try it: move or remove a card, or press Send to Crop.</p>
+      </div>
+    </section>
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-12 items-center" aria-labelledby="mini">
+      <div class="flex flex-col gap-4">
+        <h2 id="mini" class="text-2xl md:text-3xl font-bold text-slate-900">Mini mode</h2>
+        <p class="text-lg text-slate-500 leading-relaxed">Shrink the window to a small square that stays on top of your other windows. Drop one PDF on it to crop it, or several to combine them. Keep the full window on top with the pin.</p>
+      </div>
+      <div class="desk flex items-center justify-center gap-10 py-16 mac" aria-hidden="true">
+        <div class="portal"><svg class="ex" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4"/><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg></div><span>Drop PDFs here</span></div>
+        <div class="portal on"><svg class="ex" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4"/><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg></div><span>Release to open</span></div>
+      </div>
+    </section>
+
+    <section class="mt-24" aria-labelledby="what">
+      <h2 id="what" class="text-2xl md:text-3xl font-bold text-slate-900">What it does</h2>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Pick the pages</h3><p class="text-slate-500 leading-relaxed">Only the page you drew on, all pages, odd or even pages. Narrow it further with a list like 1-10,15.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Text stays text</h3><p class="text-slate-500 leading-relaxed">The crop changes the page’s box, it doesn’t turn the page into a picture. Text stays selectable and fonts stay embedded.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">One PDF or separate files</h3><p class="text-slate-500 leading-relaxed">Save the crops as one PDF, or as a .zip with one PDF per page. Full page mode exports pages as they are.</p></div>
+        <div class="feat"><h3 class="font-semibold text-[17px]" style="color:var(--ink)">Never overwrites</h3><p class="text-slate-500 leading-relaxed">Files are saved next to the original or in a folder you choose. An existing file gets a new name, like report_cropped 2.pdf.</p></div>
+      </div>
+    </section>
+
+    <section class="mt-24 grid grid-cols-1 lg:grid-cols-2 gap-12" aria-labelledby="private">
+      <div>
+        <h2 id="private" class="text-2xl md:text-3xl font-bold text-slate-900">On your Mac, nothing uploaded</h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed max-w-xl">Pare PDF uses Apple’s built-in PDFKit, on your Mac. Your files are never uploaded, and there is no account to make. Prefer the browser? <a href="../pdf-crop/" class="underline underline-offset-2" style="color:var(--ink)">PDF Crop</a> does the same, free and also without uploading anything.</p>
+      </div>
+      <ul class="flex flex-col gap-4 list-none p-0 lg:pt-14">
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>A Mac with Apple silicon (M1 or later)</span></li>
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>macOS 15 or later</span></li>
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Free, on the Mac App Store</span></li>
+        <li class="point"><span class="point-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>From the makers of <a href="../pare/" class="underline underline-offset-2" style="color:var(--ink)">Pare Studio</a> and <a href="../pare-social/" class="underline underline-offset-2" style="color:var(--ink)">Pare Social</a></span></li>
+      </ul>
+    </section>
+
+    <section class="mt-16 rounded-3xl bg-slate-50 border border-slate-100 px-6 py-12 text-center flex flex-col items-center gap-5">
+      <img class="app-icon" src="../../assets/pare-pdf/icon.webp" width="72" height="72" alt="">
+      <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Give Pare PDF a go</h2>
+      <p class="text-slate-500 max-w-md">Free for macOS, coming to the Mac App Store.</p>
+      <span class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Coming soon</span>
+    </section>
+  </main>
+
+  <div data-asariko-footer></div>
+
+<script src="../../script.js"></script>
+<script>
+// Mock-up pages in PDF units (A4, 210 × 297), drawn like the PDF Crop video.
+function rnd(n, i) { const s = Math.sin(n * 91.7 + i * 12.9) * 43758.5; return s - Math.floor(s); }
+function pageSVG(kind, n) {
+  let g = '';
+  const line = (y, w) => g += `<rect x="20" y="${y}" width="${w}" height="3" rx="1.5" fill="#d9dde3"/>`;
+  const font = 'font-family="-apple-system,Arial"';
+  if (kind === 'cover') {
+    g += `<rect width="210" height="297" fill="#2c3e50"/><text x="20" y="130" font-size="22" font-weight="700" fill="#fff" ${font}>Field Report</text><text x="20" y="146" font-size="8" fill="#cbd5e1" ${font}>2026 edition</text>`;
+  } else if (kind === 'appendix') {
+    g += `<text x="20" y="24" font-size="9" font-weight="700" fill="#2c3e50" ${font}>Appendix</text>`;
+    for (let r = 0; r < 18; r++) for (let c = 0; c < 4; c++) g += `<rect x="${20 + c * 44}" y="${38 + r * 13}" width="38" height="3" rx="1.5" fill="${r === 0 ? '#94a3b8' : '#d9dde3'}"/>`;
+  } else {
+    g += `<text x="20" y="24" font-size="9" font-weight="700" fill="#2c3e50" ${font}>Field Report</text><text x="190" y="24" font-size="7" fill="#94a3b8" text-anchor="end" ${font}>Page ${n}</text>`;
+    [36, 44, 52, 60, 68, 76].forEach((y, i) => line(y, 170 - (i === 5 ? 70 : rnd(n, i) * 30)));
+    g += `<rect x="20" y="88" width="170" height="94" fill="#f7f9fb" stroke="#e3e7ec" stroke-width=".6"/>`;
+    for (let i = 0; i < 7; i++) { const h = 18 + rnd(n, i + 7) * 52; g += `<rect x="${34 + i * 21.5}" y="${170 - h}" width="13" height="${h}" rx="1.5" fill="${i % 2 ? '#7b9cc4' : '#2c3e50'}"/>`; }
+    g += `<rect x="30" y="170" width="150" height=".6" fill="#94a3b8"/><text x="105" y="179" font-size="6" fill="#64748b" text-anchor="middle" ${font}>Figure ${n}</text>`;
+    for (let i = 0; i < 11; i++) line(194 + i * 8, 170 - (i === 10 ? 90 : rnd(n, i + 20) * 30));
+  }
+  return `<svg viewBox="0 0 210 297" preserveAspectRatio="none" aria-hidden="true"><rect width="210" height="297" fill="#fff"/>${g}</svg>`;
+}
+
+// PageSelection.swift, ported: "1-10,15" → sorted pages, filtered by parity; empty = every page.
+function parsePages(text, parity, count) {
+  const want = new Set(), t = text.trim();
+  if (!t) for (let i = 1; i <= count; i++) want.add(i);
+  else for (const tok of t.split(',')) {
+    const ends = tok.split('-').map(s => s.trim()), num = s => /^\d+$/.test(s) ? +s : null;
+    if (ends.length === 2 && num(ends[0]) != null && num(ends[1]) != null) {
+      const lo = Math.max(Math.min(num(ends[0]), num(ends[1])), 1), hi = Math.min(Math.max(num(ends[0]), num(ends[1])), count);
+      for (let i = lo; i <= hi; i++) want.add(i);
+    } else if (ends.length === 1 && num(ends[0]) != null) want.add(num(ends[0]));
+  }
+  return [...want].filter(n => n >= 1 && n <= count && (parity === 'odd' ? n % 2 : parity === 'even' ? !(n % 2) : true)).sort((a, b) => a - b);
+}
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+const ICONS = `<span class="tb-icons" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 10.76V6h6v4.76l2 3.24H7z"/><path d="M8 2h8"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></span>`;
+const REPORT = Array.from({ length: 8 }, (_, i) => ({ kind: 'report', n: i + 1 }));
+const FILES = [['appendix.pdf', 'appendix', 2], ['cover.pdf', 'cover', 1], ['report.pdf', 'report', 6]];   // Finder name order, as the app adds them
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function makeDemo(root) {
+  const s = { tab: root.dataset.demo, file: 'field-report.pdf', pages: REPORT, rect: null, drawn: null, full: false, parity: 'selected', narrow: '', separate: false, zoom: 25, status: '', cards: FILES.map(f => ({ name: f[0], kind: f[1], pages: f[2] })), cstatus: '' };
+  root.innerHTML = `<div class="tb"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="tabs" role="group" aria-label="Mode"><button type="button" data-tab="crop">Crop</button><button type="button" data-tab="combine">Combine</button></span>${ICONS}</div><div class="pane"></div>`;
+  const pane = root.querySelector('.pane');
+  root.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { s.tab = b.dataset.tab; render(); });
+
+  const targets = () => !s.full && s.parity === 'selected' ? (s.drawn ? [s.drawn] : []) : parsePages(s.narrow, s.parity, s.pages.length);
+  const canSave = () => s.full || !!s.rect;
+
+  function render() {
+    root.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === s.tab));
+    s.tab === 'crop' ? renderCrop() : renderCombine();
+  }
+
+  function renderCrop() {
+    pane.innerHTML = `<div class="row"><button type="button" class="b" tabindex="-1">Open PDF…</button><span class="fname">${s.file}</span>
+        <label>Zoom: <select data-k="zoom"><option value="25">25%</option><option value="50">50%</option></select></label>
+        <button type="button" class="b p" data-save>${s.full ? 'Export' : 'Save Crop'}</button><button type="button" class="b" tabindex="-1">Advanced ▾</button>
+        <span class="stat" aria-live="polite"></span><span class="hint">${s.full ? 'Full page mode: nothing to draw.' : 'Drag one rectangle on any page below.'}</span></div>
+      <div class="row opts">
+        <label>Region: <select data-k="full"><option value="0">Custom selection</option><option value="1">Full page</option></select></label>
+        <label>Pages: <select data-k="parity"><option value="selected">Selection only</option><option value="all">All pages</option><option value="odd">Odd pages only</option><option value="even">Even pages only</option></select></label>
+        <label>Narrow to: <input data-k="narrow" placeholder="e.g. 1-10,15 (optional)" value="${s.narrow}"></label>
+        <label>Output: <select data-k="separate"><option value="0">One combined PDF</option><option value="1">Separate files (.zip)</option></select></label></div>
+      <div class="stage"><div class="pages" style="--pw:${s.zoom === 50 ? 210 : 120}px">${s.pages.map((p, i) => `<div class="pg" data-n="${i + 1}">${pageSVG(p.kind, p.kind === 'report' ? p.n : i + 1)}<span class="badge">${i + 1}</span></div>`).join('')}</div></div>`;
+    const q = sel => pane.querySelector(sel);
+    q('[data-k="zoom"]').value = s.zoom; q('[data-k="full"]').value = +s.full; q('[data-k="parity"]').value = s.parity; q('[data-k="separate"]').value = +s.separate;
+    q('[data-k="parity"] option[value="selected"]').disabled = s.full;
+    q('[data-k="zoom"]').onchange = e => { s.zoom = +e.target.value; renderCrop(); };
+    q('[data-k="full"]').onchange = e => { s.full = e.target.value === '1'; if (s.full) { s.rect = null; s.drawn = null; if (s.parity === 'selected') s.parity = 'all'; } s.status = ''; renderCrop(); };
+    q('[data-k="parity"]').onchange = e => { s.parity = e.target.value; s.status = ''; renderCrop(); };
+    q('[data-k="separate"]').onchange = e => { s.separate = e.target.value === '1'; s.status = ''; drawStatus(); };
+    const narrow = q('[data-k="narrow"]');
+    narrow.disabled = !(s.full || s.parity !== 'selected');
+    narrow.oninput = e => { s.narrow = e.target.value; s.status = ''; drawBoxes(); drawStatus(); };
+    q('[data-save]').onclick = save;
+    pane.querySelectorAll('.pg').forEach(pg => pg.addEventListener('pointerdown', e => drag(e, pg)));
+    drawBoxes(); drawStatus();
+  }
+
+  function drawStatus() {
+    const st = pane.querySelector('.stat');
+    st.innerHTML = s.status ? `${s.status}${s.status.startsWith('No ') ? '' : ' <span class="link">Show in Finder</span>'}` : '';
+    pane.querySelector('[data-save]').disabled = !canSave();
+  }
+
+  function save() {
+    const t = targets();
+    if (!t.length) { s.status = 'No pages match that range/filter.'; drawStatus(); return; }
+    s.status = s.separate ? `${plural(t.length, 'page')} saved as separate files in one .zip.` : `${plural(t.length, 'page')} ${s.full ? 'exported' : 'cropped'} into one PDF.`;
+    drawStatus();
+  }
+
+  function boxEl(pg, r, cls) {
+    const b = document.createElement('div');
+    b.className = 'box ' + cls;
+    Object.assign(b.style, { left: r.x / 210 * 100 + '%', top: r.y / 297 * 100 + '%', width: r.w / 210 * 100 + '%', height: r.h / 297 * 100 + '%' });
+    pg.appendChild(b);
+    return b;
+  }
+
+  // Blue on every page the save will act on, so the preview always matches the output.
+  function drawBoxes(popFrom) {
+    const t = new Set(targets());
+    pane.querySelectorAll('.pg').forEach(pg => {
+      pg.querySelectorAll('.box').forEach(b => b.remove());
+      const n = +pg.dataset.n;
+      if (!s.full && s.rect && t.has(n)) {
+        const b = boxEl(pg, s.rect, popFrom && n !== s.drawn ? 'pop' : '');
+        if (popFrom) b.style.animationDelay = (Math.abs(n - s.drawn) * 40) + 'ms';
+      }
+    });
+  }
+
+  function toUnits(pg, e) {
+    const r = pg.getBoundingClientRect();
+    return { x: Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1) * 210, y: Math.min(Math.max((e.clientY - r.top) / r.height, 0), 1) * 297, scale: r.width / 210 };
+  }
+  function drag(e, pg) {
+    e.preventDefault();
+    pg.setPointerCapture(e.pointerId);
+    const a = toUnits(pg, e);
+    pane.querySelectorAll('.box').forEach(b => b.remove());
+    const live = boxEl(pg, { x: a.x, y: a.y, w: 0, h: 0 }, 'red');
+    let r = null;
+    const move = ev => {
+      const b = toUnits(pg, ev);
+      r = { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), w: Math.abs(a.x - b.x), h: Math.abs(a.y - b.y), scale: b.scale };
+      Object.assign(live.style, { left: r.x / 2.1 + '%', top: r.y / 2.97 + '%', width: r.w / 2.1 + '%', height: r.h / 2.97 + '%' });
+    };
+    pg.addEventListener('pointermove', move);
+    pg.addEventListener('pointerup', () => {
+      pg.removeEventListener('pointermove', move);
+      live.remove();
+      // under 5 points either way: no rectangle, as in the app
+      if (!r || r.w * r.scale < 5 || r.h * r.scale < 5) { s.rect = null; drawBoxes(); drawStatus(); return; }
+      s.rect = r; s.drawn = +pg.dataset.n; s.status = '';
+      if (s.full) { s.full = false; renderCrop(); } else { drawBoxes(true); drawStatus(); }
+    }, { once: true });
+  }
+
+  function renderCombine() {
+    const total = s.cards.reduce((a, c) => a + c.pages, 0), ok = s.cards.length >= 2;
+    pane.innerHTML = `<div class="row"><button type="button" class="b" data-add>Add PDFs…</button><span class="fname">${s.cards.length ? `${plural(s.cards.length, 'file')} · ${plural(total, 'page')}` : ''}</span>
+        <button type="button" class="b p" data-csave ${ok ? '' : 'disabled'}>Save Combine</button><button type="button" class="b" data-send ${ok ? '' : 'disabled'}>Send to Crop</button>
+        <span class="stat" aria-live="polite">${s.cstatus ? `${s.cstatus} <span class="link">Show in Finder</span>` : ''}</span><span class="hint">Drag the cards to change the order.</span></div>
+      <div class="stage c">${s.cards.length ? `<div class="cards">${s.cards.map((c, i) => `<div class="ccard" data-i="${i}"><span class="num">${i + 1}</span><div class="th">${pageSVG(c.kind, 2)}</div><b>${c.name}</b><small>${plural(c.pages, 'page')}</small>
+        <span class="acts"><button type="button" class="b" data-mv="-1" aria-label="Move ${c.name} earlier" ${i ? '' : 'disabled'}>◀</button><button type="button" class="b" data-mv="1" aria-label="Move ${c.name} later" ${i < s.cards.length - 1 ? '' : 'disabled'}>▶</button><button type="button" class="b" data-rm aria-label="Remove ${c.name}">✕</button></span></div>`).join('')}</div>`
+        : '<p class="empty">Add two or more PDFs. They are combined in the order shown.</p>'}</div>`;
+    pane.querySelectorAll('.ccard').forEach(card => {
+      const i = +card.dataset.i;
+      card.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => {
+        const j = i + +b.dataset.mv;
+        [s.cards[i], s.cards[j]] = [s.cards[j], s.cards[i]]; s.cstatus = '';
+        renderCombine();
+        pane.querySelector(`.ccard[data-i="${j}"]`).classList.add('moved');
+        pane.querySelector(`.ccard[data-i="${j}"] [data-mv="${b.dataset.mv}"]`)?.focus();
+      });
+      card.querySelector('[data-rm]').onclick = () => { s.cards.splice(i, 1); s.cstatus = ''; renderCombine(); };
+    });
+    pane.querySelector('[data-add]').onclick = () => {   // adds back what was removed, in Finder name order
+      FILES.forEach(f => { if (!s.cards.some(c => c.name === f[0])) s.cards.push({ name: f[0], kind: f[1], pages: f[2] }); });
+      s.cstatus = ''; renderCombine();
+    };
+    pane.querySelector('[data-csave]').onclick = () => { s.cstatus = `Saved combined.pdf (${total} pages).`; renderCombine(); };
+    pane.querySelector('[data-send]').onclick = () => {
+      let k = 0;
+      s.pages = s.cards.flatMap(c => Array.from({ length: c.pages }, () => ({ kind: c.kind, n: ++k })));
+      s.file = 'combined.pdf'; s.rect = null; s.drawn = null; s.status = ''; s.tab = 'crop';
+      render();
+    };
+  }
+
+  // The hero plays the app's main move once: a box drawn on page 1, then "All pages" puts it on every page.
+  function intro() {
+    if (s.tab !== 'crop') return;
+    const pg = pane.querySelector('.pg[data-n="1"]');
+    const target = { x: 18, y: 86, w: 174, h: 98 };
+    const finish = () => { s.rect = target; s.drawn = 1; s.parity = 'all'; renderCrop(); drawBoxes(true); };
+    if (reduceMotion) return finish();
+    const stage = pane.querySelector('.stage'); stage.style.position = 'relative';
+    const cur = document.createElement('div');
+    cur.className = 'cursor';
+    cur.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 3l14 8-6 1.5L10 19z" fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+    stage.appendChild(cur);
+    const pr = pg.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+    const at = (ux, uy) => ({ x: pr.left - sr.left + stage.scrollLeft + ux / 210 * pr.width, y: pr.top - sr.top + stage.scrollTop + uy / 297 * pr.height });
+    const live = boxEl(pg, { x: target.x, y: target.y, w: 0, h: 0 }, 'red');
+    const t0 = performance.now(), ease = k => 1 - Math.pow(1 - k, 3);
+    (function frame(now) {
+      const k = Math.min((now - t0) / 1400, 1);
+      const start = at(target.x, target.y), end = at(target.x + target.w, target.y + target.h);
+      if (k < 0.25) { const p = at(target.x, target.y); cur.style.opacity = 1; cur.style.transform = `translate(${p.x}px, ${p.y}px)`; }
+      else {
+        const d = ease((k - 0.25) / 0.75);
+        cur.style.transform = `translate(${start.x + (end.x - start.x) * d}px, ${start.y + (end.y - start.y) * d}px)`;
+        Object.assign(live.style, { width: target.w * d / 2.1 + '%', height: target.h * d / 2.97 + '%' });
+      }
+      if (k < 1) return requestAnimationFrame(frame);
+      live.remove(); cur.style.opacity = 0;
+      s.rect = target; s.drawn = 1; drawBoxes(); drawStatus();
+      setTimeout(() => {   // then Pages → All pages
+        const sel = pane.querySelector('[data-k="parity"]');
+        s.parity = 'all'; sel.value = 'all';
+        pane.querySelector('[data-k="narrow"]').disabled = false;
+        drawBoxes(true);
+        setTimeout(() => cur.remove(), 300);
+      }, 700);
+    })(t0);
+  }
+
+  render();
+  if (root.id === 'demo') {
+    if (new URLSearchParams(location.search).has('still')) { s.rect = { x: 18, y: 86, w: 174, h: 98 }; s.drawn = 1; s.parity = 'all'; renderCrop(); }
+    else new IntersectionObserver((en, ob) => { if (en[0].isIntersecting) { ob.disconnect(); setTimeout(intro, 500); } }, { threshold: 0.5 }).observe(root);
+  }
+}
+document.querySelectorAll('[data-demo]').forEach(makeDemo);
+</script>
+<script src="../../shared/header.js" defer></script>
+</body>
+</html>
